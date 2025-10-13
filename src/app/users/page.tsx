@@ -1,5 +1,6 @@
 'use client'
 
+import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
 import { ZodError } from 'zod'
 
@@ -12,6 +13,7 @@ interface User {
 }
 
 export default function UsersPage() {
+  const { data: session } = useSession()
   const [users, setUsers] = useState<User[]>([])
   const [errorMessages, setErrorMessages] = useState([])
   const [form, setForm] = useState({
@@ -78,6 +80,12 @@ export default function UsersPage() {
       email: user.email,
     })
     setEditingId(user._id)
+  }
+
+  console.log('cuy', session)
+  if (!session || session.user.role !== 'admin') {
+    console.log(session)
+    return <div>Unauthorized</div>
   }
 
   return (

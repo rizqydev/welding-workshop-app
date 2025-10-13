@@ -58,7 +58,6 @@ export default function ProductForm({
         <input
           value={brand}
           onChange={(e) => setBrand(e.target.value)}
-          required
           className="mt-1 p-2 border rounded w-full"
         />
       </div>
