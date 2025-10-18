@@ -1,8 +1,8 @@
 'use client'
 
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { redirect, useRouter } from 'next/navigation'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -10,6 +10,8 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  const { data: session } = useSession()
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,9 +33,12 @@ export default function LoginPage() {
     }
   }
 
+  if (session) {
+    redirect('/')
+  }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow">
+      <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow text-slate-600">
         <h1 className="text-2xl font-semibold mb-6 text-center">Login</h1>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
