@@ -84,7 +84,7 @@ export default function UsersPage() {
 
   console.log('cuy', session)
   if (!session || session.user.role !== 'admin') {
-    console.log(session)
+    console.log('unauthorized', session)
     return <div>Unauthorized</div>
   }
 

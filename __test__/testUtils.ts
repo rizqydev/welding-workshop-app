@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { NextRequest } from 'next/server'
 
 const TEST_DB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/test_db'
 
@@ -17,4 +18,21 @@ export async function clearTestDB() {
 
 export async function disconnectTestDB() {
   await mongoose.disconnect()
+}
+
+// helper to build a NextRequest
+export function makeRequest({
+  body,
+  method,
+  url,
+}: {
+  body?: any
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
+  url: string
+}) {
+  return new NextRequest(url, {
+    method,
+    body: JSON.stringify(body),
+    headers: { 'Content-Type': 'application/json' },
+  })
 }
