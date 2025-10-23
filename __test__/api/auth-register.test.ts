@@ -1,6 +1,7 @@
 import User from '@/models/User'
 import { connectTestDB, clearTestDB, disconnectTestDB, makeRequest } from '../testUtils'
 import { POST as RegisterPost } from '@/app/api/register/route'
+
 import { GET as RegisterSettingGet } from '@/app/api/settings/registration/route'
 import Setting from '@/models/Setting'
 

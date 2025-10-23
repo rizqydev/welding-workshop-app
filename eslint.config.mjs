@@ -11,6 +11,7 @@ const eslintConfig = [
     rules: {
       'prettier/prettier': 'error',
     },
+    ignorePatterns: ['node_modules/', '.next/'],
   }),
 ]
 

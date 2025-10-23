@@ -12,6 +12,8 @@ export async function connectTestDB() {
 export async function clearTestDB() {
   const collections = mongoose.connection.collections
   for (const key in collections) {
+    // not tested yet
+    // @ts-ignore
     await collections[key].deleteMany({})
   }
 }
@@ -30,6 +32,11 @@ export function makeRequest({
   method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   url: string
 }) {
+  jest.mock('next-auth', () => ({
+    getServerSession: jest.fn().mockResolvedValue({
+      user: { role: 'admin' },
+    }),
+  }))
   return new NextRequest(url, {
     method,
     body: JSON.stringify(body),
