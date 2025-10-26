@@ -10,6 +10,7 @@ export default function RegisterPage() {
     username: '',
     password: '',
     name: '',
+    email: '',
   })
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -62,6 +63,13 @@ export default function RegisterPage() {
             value={form.username}
             onChange={(e) => setForm({ ...form, username: e.target.value })}
             required
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            className="border p-2 rounded"
+            value={form.email}
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
           />
           <input
             type="password"
