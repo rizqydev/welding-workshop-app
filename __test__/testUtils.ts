@@ -12,7 +12,6 @@ export async function connectTestDB() {
 export async function clearTestDB() {
   const collections = mongoose.connection.collections
   for (const key in collections) {
-    // not tested yet
     // @ts-ignore
     await collections[key].deleteMany({})
   }
