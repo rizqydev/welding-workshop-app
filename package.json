@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.9",
     "@next/eslint-plugin-next": "^15.5.3",
     "bcryptjs": "^3.0.2",
     "lucide-react": "^0.546.0",

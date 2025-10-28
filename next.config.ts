@@ -1,9 +1,9 @@
-import type { NextConfig } from 'next'
+import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   /* config options here */
   eslint: {
-    dirs: ['app'],
+    dirs: ["app"],
     ignoreDuringBuilds: true,
   },
   typescript: {
@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/i,
-      use: ['@svg/webpack'],
+      use: ["@svg/webpack"],
     })
 
     return config
@@ -20,11 +20,19 @@ const nextConfig: NextConfig = {
   // Optional: If you are using Turbopack, you might also add this for explicit loader configuration
   turbopack: {
     rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
       },
     },
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+    ],
   },
 }
 
