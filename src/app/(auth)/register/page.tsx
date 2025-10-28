@@ -1,16 +1,16 @@
-'use client'
+"use client"
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { signIn } from 'next-auth/react'
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
 
 export default function RegisterPage() {
   const router = useRouter()
   const [form, setForm] = useState({
-    username: '',
-    password: '',
-    name: '',
-    email: '',
+    username: "",
+    password: "",
+    name: "",
+    email: "",
   })
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -20,9 +20,9 @@ export default function RegisterPage() {
     setLoading(true)
     setError(null)
 
-    const res = await fetch('/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(form),
     })
 
@@ -30,15 +30,15 @@ export default function RegisterPage() {
 
     if (res.ok) {
       // Automatically sign in
-      await signIn('credentials', {
+      await signIn("credentials", {
         redirect: false,
         username: form.username,
         password: form.password,
       })
-      router.push('/')
+      router.push("/")
     } else {
       const data = await res.json()
-      setError(data.error || 'Registration failed')
+      setError(data.error || "Registration failed")
     }
   }
 
@@ -87,21 +87,21 @@ export default function RegisterPage() {
             className="bg-green-600 text-white py-2 rounded hover:bg-green-700"
             disabled={loading}
           >
-            {loading ? 'Registering...' : 'Register'}
+            {loading ? "Registering..." : "Register"}
           </button>
         </form>
 
         <div className="my-6 text-center text-gray-500">or</div>
 
         <button
-          onClick={() => signIn('google')}
+          onClick={() => signIn("google")}
           className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
         >
           Sign up with Google
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-600">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <a href="/login" className="text-blue-600 hover:underline">
             Login
           </a>

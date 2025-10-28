@@ -1,9 +1,9 @@
-import bcrypt from 'bcryptjs'
-import { NextResponse } from 'next/server'
-import dbConnect from '@/lib/mongoose'
-import User, { IUser } from '@/models/User'
-import Setting, { ISetting } from '@/models/Setting'
-import { userRegisterSchema } from '@/lib/validations/user'
+import bcrypt from "bcryptjs"
+import { NextResponse } from "next/server"
+import dbConnect from "@/lib/mongoose"
+import User, { IUser } from "@/models/User"
+import Setting, { ISetting } from "@/models/Setting"
+import { userRegisterSchema } from "@/lib/validations/user"
 
 export async function handleRegister(req: Request) {
   await dbConnect()
@@ -11,7 +11,7 @@ export async function handleRegister(req: Request) {
   const setting = await Setting.findOne()
   const registrationEnabled = setting?.registrationEnabled ?? true
   if (!registrationEnabled) {
-    return NextResponse.json({ error: 'Registration disabled' }, { status: 403 })
+    return NextResponse.json({ error: "Registration disabled" }, { status: 403 })
   }
 
   const body = await req.json()
@@ -23,7 +23,7 @@ export async function handleRegister(req: Request) {
   const { username, password, name, userRole, email } = parsed.data
   const existing = await User.findOne({ username })
   if (existing) {
-    return NextResponse.json({ error: 'Username taken' }, { status: 400 })
+    return NextResponse.json({ error: "Username taken" }, { status: 400 })
   }
 
   const passwordHash = await bcrypt.hash(password, 10)
@@ -79,7 +79,7 @@ export async function registerByGoogleAuth(
       passwordHash: await bcrypt.hash(Date.now().toString(), 10),
       name,
       email,
-      userRole: 'technician',
+      userRole: "technician",
     })
 
     return newUser
