@@ -15,5 +15,9 @@ export async function GET() {
 export async function PUT(req: NextRequest) {
   const session = await getServerSession(authOptions)
 
+  if (!session || session.user.role !== "admin") {
+    return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403 })
+  }
+
   return handleSettingsUpdate(req, session)
 }
