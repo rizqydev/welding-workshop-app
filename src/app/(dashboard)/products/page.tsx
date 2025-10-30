@@ -1,7 +1,7 @@
-'use client'
+"use client"
 
-import { useEffect, useState } from 'react'
-import { ProductInput } from '@/lib/validations/product'
+import { useEffect, useState } from "react"
+import { ProductInput } from "@/lib/validations/product"
 
 interface Product extends ProductInput {
   _id: string
@@ -10,16 +10,16 @@ interface Product extends ProductInput {
 export default function ProductPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [form, setForm] = useState<ProductInput>({
-    name: '',
-    brand: '',
+    name: "",
+    brand: "",
     qty: 0,
-    information: '',
+    information: "",
   })
   const [editingId, setEditingId] = useState<string | null>(null)
 
   // Fetch products
   useEffect(() => {
-    fetch('/api/products')
+    fetch("/api/products")
       .then((res) => res.json())
       .then((data) => setProducts(data))
   }, [])
@@ -27,7 +27,7 @@ export default function ProductPage() {
   // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setForm({ ...form, [name]: name === 'qty' ? Number(value) : value })
+    setForm({ ...form, [name]: name === "qty" ? Number(value) : value })
   }
 
   // Submit form (create or update)
@@ -37,34 +37,34 @@ export default function ProductPage() {
     if (editingId) {
       // Update product
       const res = await fetch(`/api/products/${editingId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       })
       if (res.ok) {
         const updatedProduct = await res.json()
         setProducts(products.map((p) => (p._id === editingId ? updatedProduct : p)))
         setEditingId(null)
-        setForm({ name: '', brand: '', qty: 0, information: '' })
+        setForm({ name: "", brand: "", qty: 0, information: "" })
       }
     } else {
       // Create product
-      const res = await fetch('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       })
       if (res.ok) {
         const newProduct = await res.json()
         setProducts([newProduct, ...products])
-        setForm({ name: '', brand: '', qty: 0, information: '' })
+        setForm({ name: "", brand: "", qty: 0, information: "" })
       }
     }
   }
 
   // Delete product
   const handleDelete = async (id: string) => {
-    const res = await fetch(`/api/products/${id}`, { method: 'DELETE' })
+    const res = await fetch(`/api/products/${id}`, { method: "DELETE" })
     if (res.ok) {
       setProducts(products.filter((p) => p._id !== id))
     }
@@ -76,7 +76,7 @@ export default function ProductPage() {
       name: product.name,
       brand: product.brand,
       qty: product.qty,
-      information: product.information || '',
+      information: product.information || "",
     })
     setEditingId(product._id)
   }
@@ -125,14 +125,14 @@ export default function ProductPage() {
             type="submit"
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
           >
-            {editingId ? 'Update Product' : 'Add Product'}
+            {editingId ? "Update Product" : "Add Product"}
           </button>
           {editingId && (
             <button
               type="button"
               onClick={() => {
                 setEditingId(null)
-                setForm({ name: '', brand: '', qty: 0, information: '' })
+                setForm({ name: "", brand: "", qty: 0, information: "" })
               }}
               className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
             >

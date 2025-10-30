@@ -1,13 +1,13 @@
-'use client'
+"use client"
 
-import { signIn, useSession } from 'next-auth/react'
-import { useState } from 'react'
-import { redirect, useRouter } from 'next/navigation'
+import { signIn, useSession } from "next-auth/react"
+import { useState } from "react"
+import { redirect, useRouter } from "next/navigation"
 
 export default function LoginPage() {
   const router = useRouter()
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
@@ -18,7 +18,7 @@ export default function LoginPage() {
     setLoading(true)
     setError(null)
 
-    const res = await signIn('credentials', {
+    const res = await signIn("credentials", {
       redirect: false,
       username,
       password,
@@ -27,14 +27,14 @@ export default function LoginPage() {
     setLoading(false)
 
     if (res?.error) {
-      setError('Invalid username or password')
+      setError("Invalid username or password")
     } else {
-      router.push('/')
+      router.push("/")
     }
   }
 
   if (session) {
-    redirect('/')
+    redirect("/")
   }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
@@ -66,21 +66,21 @@ export default function LoginPage() {
             className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
             disabled={loading}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
 
         <div className="my-6 text-center text-gray-500">or</div>
 
         <button
-          onClick={() => signIn('google')}
+          onClick={() => signIn("google")}
           className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600"
         >
           Sign in with Google
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-600">
-          Dont have an account?{' '}
+          Dont have an account?{" "}
           <a href="/register" className="text-blue-600 hover:underline">
             Register
           </a>

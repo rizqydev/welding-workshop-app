@@ -1,12 +1,13 @@
 // models/User.ts
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Schema, Document } from "mongoose"
 
 export interface IUser extends Document {
+  _id: string | undefined
   username: string
   passwordHash: string
   name: string
   email: string
-  userRole: 'admin' | 'user' | 'technician'
+  userRole: "admin" | "user" | "technician"
 }
 
 const UserSchema = new Schema<IUser>(
@@ -15,9 +16,9 @@ const UserSchema = new Schema<IUser>(
     passwordHash: { type: String, required: true },
     name: { type: String, required: true },
     email: { type: String, required: false },
-    userRole: { type: String, enum: ['admin', 'user', 'technician'], required: true },
+    userRole: { type: String, enum: ["admin", "user", "technician"], required: true },
   },
   { timestamps: true },
 )
 
-export default mongoose.models.User || mongoose.model<IUser>('User', UserSchema)
+export default mongoose.models.User || mongoose.model<IUser>("User", UserSchema)

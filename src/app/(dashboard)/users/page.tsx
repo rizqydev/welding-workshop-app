@@ -1,194 +1,214 @@
-'use client'
+"use client"
 
-import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
-import { ZodError } from 'zod'
+import { useEffect, useState } from "react"
+import { useApiForm } from "@/hooks/useApiForm"
+import Table from "@/components/common/Table"
+import { ModalForm } from "@/components/common/ModalForm"
+import { ConfirmModal } from "@/components/common/ConfirmModal"
 
-interface User {
-  _id: string
+type UserRole = "admin" | "technician"
+
+interface IUser {
+  _id?: string
   username: string
-  name: string
-  userRole: string
   email: string
+  name: string
+  userRole: UserRole
+  password?: string
 }
 
 export default function UsersPage() {
-  const { data: session } = useSession()
-  const [users, setUsers] = useState<User[]>([])
-  const [errorMessages, setErrorMessages] = useState([])
-  const [form, setForm] = useState({
-    username: '',
-    password: '',
-    name: '',
-    userRole: 'technician',
-    email: '',
+  const [users, setUsers] = useState<IUser[]>([])
+  const [isLoadingPage, setLoadingPage] = useState(true)
+  const [isFormOpen, setFormOpen] = useState(false)
+  const [isDeleteOpen, setDeleteOpen] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<IUser | null>(null)
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const pageSize = 5
+
+  const { submitRequest, isSubmitting } = useApiForm({
+    onSuccess: () => {
+      fetchUsers()
+      setFormOpen(false)
+      setDeleteOpen(false)
+    },
   })
-  const [editingId, setEditingId] = useState<string | null>(null)
+
+  async function fetchUsers() {
+    setLoadingPage(true)
+    const res = await fetch(`/api/users?page=${page}&limit=${pageSize}`)
+    const data = await res.json()
+
+    setLoadingPage(false)
+    setUsers(data.users || [])
+    setTotalPages(data.totalPages || 1)
+  }
 
   useEffect(() => {
-    fetch('/api/users')
-      .then((res) => res.json())
-      .then(setUsers)
-  }, [])
+    fetchUsers()
+  }, [page])
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
+  const openForm = (user?: IUser) => {
+    setSelectedUser(user || null)
+    setFormOpen(true)
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (editingId) {
-      const res = await fetch(`/api/users/${editingId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
-      if (res.ok) {
-        const updated = await res.json()
-        setUsers(users.map((u) => (u._id === editingId ? updated : u)))
-        setEditingId(null)
-        setForm({ username: '', password: '', name: '', userRole: 'user', email: '' })
-      }
-    } else {
-      const res = await fetch('/api/users', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      })
-      if (res.ok) {
-        const created = await res.json()
-        setUsers([created, ...users])
-        setForm({ username: '', password: '', name: '', userRole: 'user', email: '' })
-      } else {
-        const error = await res.json()
-        setErrorMessages(error.error)
-      }
+  const openDelete = (user: IUser) => {
+    setSelectedUser(user)
+    setDeleteOpen(true)
+  }
+
+  const handleFormSubmit = async (submitRequestFn: any) => {
+    if (!selectedUser?.userRole) {
+      setSelectedUser({ ...selectedUser, userRole: "technician" } as IUser)
     }
+    const url = selectedUser?._id ? `/api/users/${selectedUser._id}` : `/api/users`
+    const method = selectedUser?._id ? "PUT" : "POST"
+    await submitRequestFn(url, method, selectedUser)
   }
 
-  const handleDelete = async (id: string) => {
-    await fetch(`/api/users/${id}`, { method: 'DELETE' })
-    setUsers(users.filter((u) => u._id !== id))
-  }
-
-  const handleEdit = (user: User) => {
-    setForm({
-      username: user.username,
-      password: '',
-      name: user.name,
-      userRole: user.userRole,
-      email: user.email,
-    })
-    setEditingId(user._id)
-  }
-
-  console.log('cuy', session)
-  if (!session || session.user.role !== 'admin') {
-    console.log('unauthorized', session)
-    return <div>Unauthorized</div>
+  const handleDelete = async () => {
+    if (!selectedUser?._id) return
+    await submitRequest(`/api/users/${selectedUser._id}`, "DELETE")
   }
 
   return (
-    <main className="p-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Users</h1>
-      {errorMessages.length > 0 && (
-        <p>
-          Error
-          {errorMessages.map((val: ZodError, key: number) => (
-            <div key={key}>{val?.message}</div>
-          ))}
-        </p>
-      )}
-      <form onSubmit={handleSubmit} className="space-y-2 mb-6">
-        <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={form.username}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          required
-        />
-        <input
-          type="text"
-          name="email"
-          placeholder="Email"
-          value={form.email}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          required
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder={editingId ? 'New Password (optional)' : 'Password'}
-          value={form.password}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          required={!editingId}
-        />
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={form.name}
-          onChange={handleChange}
-          className="border p-2 w-full"
-          required
-        />
-        <select
-          name="userRole"
-          value={form.userRole}
-          onChange={handleChange}
-          className="border p-2 w-full"
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-semibold text-gray-800">Users</h1>
+        <button
+          onClick={() => openForm()}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
-          <option value="admin">Admin</option>
-          <option value="technician">Technician</option>
-        </select>
-        <div className="flex space-x-2">
-          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
-            {editingId ? 'Update User' : 'Add User'}
-          </button>
-          {editingId && (
-            <button
-              type="button"
-              onClick={() => {
-                setEditingId(null)
-                setForm({ username: '', password: '', name: '', userRole: 'technician', email: '' })
-              }}
-              className="bg-gray-400 text-white px-4 py-2 rounded"
-            >
-              Cancel
-            </button>
-          )}
-        </div>
-      </form>
+          Add User
+        </button>
+      </div>
 
-      <ul className="space-y-2">
-        {users.map((u) => (
-          <li key={u._id} className="border p-3 flex justify-between items-center">
+      <Table
+        columns={[
+          { key: "username", header: "Username" },
+          { key: "email", header: "Email" },
+          { key: "name", header: "Name" },
+          { key: "userRole", header: "Role" },
+        ]}
+        data={users}
+        loading={isLoadingPage}
+        actions={(row) => (
+          <div className="flex gap-2">
+            <button onClick={() => openForm(row)} className="text-blue-600 hover:underline">
+              Edit
+            </button>
+            <button onClick={() => openDelete(row)} className="text-red-600 hover:underline">
+              Delete
+            </button>
+          </div>
+        )}
+      />
+
+      {/* Pagination */}
+      <div className="flex justify-end items-center gap-3 mt-4">
+        <button
+          onClick={() => setPage((p) => Math.max(1, p - 1))}
+          disabled={page === 1}
+          className="px-3 py-1 bg-gray-100 rounded-md disabled:opacity-50"
+        >
+          Prev
+        </button>
+        <span className="text-sm text-gray-700">
+          Page {page} of {totalPages}
+        </span>
+        <button
+          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+          disabled={page === totalPages}
+          className="px-3 py-1 bg-gray-100 rounded-md disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+
+      {/* Add / Edit Modal */}
+      <ModalForm
+        isOpen={isFormOpen}
+        onClose={() => setFormOpen(false)}
+        title={selectedUser?._id ? "Edit User" : "Add User"}
+        onSubmit={handleFormSubmit}
+        submitLabel={selectedUser?._id ? "Update" : "Create"}
+      >
+        <div className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Username</label>
+            <input
+              type="text"
+              value={selectedUser?.username || ""}
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, username: e.target.value } as IUser)
+              }
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+
+          {!selectedUser?._id && (
             <div>
-              <h2 className="font-semibold">{u.username}</h2>
-              <p className="text-sm">Name: {u.name}</p>
-              <p className="text-sm">Role: {u.userRole}</p>
+              <label className="block text-sm font-medium text-gray-700">Password</label>
+              <input
+                type="password"
+                onChange={(e) =>
+                  setSelectedUser({ ...selectedUser, password: e.target.value } as IUser)
+                }
+                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+              />
             </div>
-            <div className="space-x-2">
-              <button
-                onClick={() => handleEdit(u)}
-                className="bg-yellow-500 text-white px-3 py-1 rounded"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(u._id)}
-                className="bg-red-500 text-white px-3 py-1 rounded"
-              >
-                Delete
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
-    </main>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              value={selectedUser?.email || ""}
+              onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value } as IUser)}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Name</label>
+            <input
+              type="text"
+              value={selectedUser?.name || ""}
+              onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value } as IUser)}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Role</label>
+            <select
+              value={selectedUser?.userRole || "technician"}
+              onChange={(e) =>
+                setSelectedUser({
+                  ...selectedUser,
+                  userRole: e.target.value as UserRole,
+                } as IUser)
+              }
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            >
+              <option value="technician">Teknisi</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+      </ModalForm>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={isDeleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        title="Delete User"
+        message={`Are you sure you want to delete ${selectedUser?.username}?`}
+        onConfirm={handleDelete}
+        isLoading={isSubmitting}
+      />
+    </div>
   )
 }

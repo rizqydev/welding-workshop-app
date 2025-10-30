@@ -1,19 +1,19 @@
-const nextJest = require('next/jest')
+const nextJest = require("next/jest")
 
 const createJestConfig = nextJest({
-  dir: './',
+  dir: "./",
 })
 
 /** @type {import('jest').Config} */
 module.exports = createJestConfig({
-  preset: 'ts-jest',
-  testEnvironment: 'node',
-  testPathIgnorePatterns: ['/node_modules/', '/.next/'],
+  preset: "ts-jest",
+  testEnvironment: "node",
+  testPathIgnorePatterns: ["/node_modules/", "/.next/"],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/$1',
+    "^@/(.*)$": "<rootDir>/src/$1",
   },
   transform: {
-    '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
+    "^.+\\.(ts|tsx)$": ["ts-jest", { tsconfig: "tsconfig.json" }],
   },
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
 })
