@@ -35,8 +35,8 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: parsed.error!.issues }, { status: 400 })
   }
 
-  const { username, password, name, userRole } = parsed.data
+  const { username, password, name, userRole, email } = parsed.data
   const passwordHash = await bcrypt.hash(password, 10)
-  const user = await User.create({ username, passwordHash, name, userRole })
-  return NextResponse.json({ _id: user._id, username, name, userRole }, { status: 201 })
+  const user = await User.create({ username, passwordHash, name, userRole, email })
+  return NextResponse.json({ _id: user._id, username, name, userRole, email }, { status: 201 })
 }

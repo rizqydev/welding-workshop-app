@@ -60,12 +60,13 @@ export default function UsersPage() {
   }
 
   const handleFormSubmit = async (submitRequestFn: any) => {
-    if (!selectedUser?.userRole) {
-      setSelectedUser({ ...selectedUser, userRole: "technician" } as IUser)
+    const userToSubmit = selectedUser
+    if (userToSubmit !== null && !userToSubmit?.userRole) {
+      userToSubmit.userRole = "technician"
     }
     const url = selectedUser?._id ? `/api/users/${selectedUser._id}` : `/api/users`
     const method = selectedUser?._id ? "PUT" : "POST"
-    await submitRequestFn(url, method, selectedUser)
+    await submitRequestFn(url, method, userToSubmit)
   }
 
   const handleDelete = async () => {
@@ -193,7 +194,9 @@ export default function UsersPage() {
               }
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             >
-              <option value="technician">Teknisi</option>
+              <option value="technician" selected>
+                Teknisi
+              </option>
               <option value="admin">Admin</option>
             </select>
           </div>
