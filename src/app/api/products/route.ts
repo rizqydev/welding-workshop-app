@@ -1,13 +1,25 @@
-import dbConnect from '@/lib/mongoose'
-import { productSchema } from '@/lib/validations/product'
-import Product from '@/models/Product'
-import { NextResponse } from 'next/server'
+import dbConnect from "@/lib/mongoose"
+import { productSchema } from "@/lib/validations/product"
+import Product from "@/models/Product"
+import { NextResponse } from "next/server"
 
-export async function GET() {
+export async function GET(req: Request) {
   await dbConnect()
-  const products = await Product.find().sort({ createdAt: -1 }).lean()
+  const { searchParams } = new URL(req.url)
+  const page = parseInt(searchParams.get("page") || "1", 10)
+  const limit = parseInt(searchParams.get("limit") || "10", 10)
+  const skip = (page - 1) * limit
 
-  return NextResponse.json(products)
+  const [products, total] = await Promise.all([
+    Product.find().skip(skip).limit(limit),
+    Product.countDocuments(),
+  ])
+
+  return NextResponse.json({
+    data: products,
+    totalPages: Math.ceil(total / limit),
+    total,
+  })
 }
 
 export async function POST(request: Request) {

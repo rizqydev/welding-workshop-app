@@ -44,11 +44,11 @@ const navItems: NavItem[] = [
     path: "/users",
   },
 
-  // {
-  //   name: 'Forms',
-  //   icon: <ListIcon />,
-  //   subItems: [{ name: 'Form Elements', path: '/form-elements', pro: false }],
-  // },
+  {
+    name: "Products",
+    icon: <ListIcon />,
+    path: "/products",
+  },
   // {
   //   name: 'Tables',
   //   icon: <TableIcon />,
@@ -296,19 +296,19 @@ const AppSidebar: React.FC = () => {
                 className="dark:hidden"
                 src="/images/logo/logo.svg"
                 alt="Logo"
-                width={150}
+                width={40}
                 height={40}
               />
               <Image
                 className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
+                src="/images/logo/logo.svg"
                 alt="Logo"
-                width={150}
+                width={40}
                 height={40}
               />
             </>
           ) : (
-            <Image src="/images/logo/logo-icon.svg" alt="Logo" width={32} height={32} />
+            <Image src="/images/logo/logo.svg" alt="Logo" width={32} height={32} />
           )}
         </Link>
       </div>
