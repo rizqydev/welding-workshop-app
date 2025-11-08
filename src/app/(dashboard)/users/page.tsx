@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import { useApiForm } from "@/hooks/useApiForm"
 import Table from "@/components/common/Table"
 import { ModalForm } from "@/components/common/ModalForm"
@@ -85,27 +85,28 @@ export default function UsersPage() {
           Add User
         </button>
       </div>
-
-      <Table
-        columns={[
-          { key: "username", header: "Username" },
-          { key: "email", header: "Email" },
-          { key: "name", header: "Name" },
-          { key: "userRole", header: "Role" },
-        ]}
-        data={users}
-        loading={isLoadingPage}
-        actions={(row) => (
-          <div className="flex gap-2">
-            <button onClick={() => openForm(row)} className="text-blue-600 hover:underline">
-              Edit
-            </button>
-            <button onClick={() => openDelete(row)} className="text-red-600 hover:underline">
-              Delete
-            </button>
-          </div>
-        )}
-      />
+      <Suspense fallback={<div>Loading</div>}>
+        <Table
+          columns={[
+            { key: "username", header: "Username" },
+            { key: "email", header: "Email" },
+            { key: "name", header: "Name" },
+            { key: "userRole", header: "Role" },
+          ]}
+          data={users}
+          loading={isLoadingPage}
+          actions={(row) => (
+            <div className="flex gap-2">
+              <button onClick={() => openForm(row)} className="text-blue-600 hover:underline">
+                Edit
+              </button>
+              <button onClick={() => openDelete(row)} className="text-red-600 hover:underline">
+                Delete
+              </button>
+            </div>
+          )}
+        />
+      </Suspense>
 
       {/* Pagination */}
       <div className="flex justify-end items-center gap-3 mt-4">
