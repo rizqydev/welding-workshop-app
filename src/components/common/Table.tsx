@@ -200,12 +200,18 @@ interface TableProps<T> {
   columns: TableColumn<T>[]
   apiEndpoint: string // e.g. "/api/products" or "/api/users"
   pageSize?: number
+  renderActions?: (row: T) => React.ReactNode // 👈 custom per-row action buttons
 }
 
-export default function Table<T>({ columns, apiEndpoint, pageSize = 10 }: TableProps<T>) {
+export default function Table<T>({
+  columns,
+  apiEndpoint,
+  pageSize = 10,
+  renderActions,
+}: TableProps<T>) {
   const [data, setData] = useState<T[]>([])
   const [totalPages, setTotalPages] = useState(1)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -246,6 +252,7 @@ export default function Table<T>({ columns, apiEndpoint, pageSize = 10 }: TableP
                   {col.label}
                 </th>
               ))}
+              {renderActions && <th className="px-4 py-2 border-b text-center">Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -258,11 +265,11 @@ export default function Table<T>({ columns, apiEndpoint, pageSize = 10 }: TableP
                       <div className="h-4 bg-gray-200 rounded w-3/4" />
                     </td>
                   ))}
-                  {/* {actions && (
+                  {renderActions && (
                     <td className="p-3 border">
                       <div className="h-4 bg-gray-200 rounded w-1/2" />
                     </td>
-                  )} */}
+                  )}
                 </tr>
               ))
             ) : data.length === 0 ? (
@@ -279,6 +286,9 @@ export default function Table<T>({ columns, apiEndpoint, pageSize = 10 }: TableP
                       {String(item[col.key])}
                     </td>
                   ))}
+                  {renderActions && (
+                    <td className="px-4 py-2 border-b text-center">{renderActions(item)}</td>
+                  )}
                 </tr>
               ))
             )}
