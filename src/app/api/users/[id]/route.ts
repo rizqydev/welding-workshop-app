@@ -17,7 +17,7 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
   const body = await req.json()
   const parsed = userUpdateSchema.safeParse(body)
   if (!parsed.success) {
-    return NextResponse.json({ error: parsed.error.flatten }, { status: 400 })
+    return NextResponse.json({ error: parsed.error.message }, { status: 400 })
   }
 
   const update: any = { ...parsed.data }
