@@ -5,6 +5,8 @@ import Table from "@/components/common/Table"
 import { ConfirmModal } from "@/components/common/ConfirmModal"
 import { useToast } from "@/context/ToastContext"
 import { ModalForm } from "@/components/common/ModalForm"
+import { InputText } from "@/components/ui/form/InputText"
+import { InputSelect } from "@/components/ui/form/InputSelect"
 
 type UserRole = "admin" | "technician" | "manager"
 
@@ -138,72 +140,53 @@ export default function UsersPage() {
         submitLabel={selectedUser?._id ? "Update" : "Create"}
       >
         <div className="space-y-3">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Username</label>
-            <input
-              type="text"
-              value={selectedUser?.username || ""}
-              onChange={(e) =>
-                setSelectedUser({ ...selectedUser, username: e.target.value } as IUser)
-              }
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            />
-          </div>
+          <InputText
+            label="Username"
+            type="text"
+            value={selectedUser?.username || ""}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, username: e.target.value } as IUser)
+            }
+          />
 
           {!selectedUser?._id && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Password</label>
-              <input
-                type="password"
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, password: e.target.value } as IUser)
-                }
-                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-              />
-            </div>
+            <InputText
+              label="Password"
+              type="password"
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, password: e.target.value } as IUser)
+              }
+            />
           )}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Name</label>
-            <input
-              type="text"
-              value={selectedUser?.name || ""}
-              onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value } as IUser)}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            />
-          </div>
+          <InputText
+            label="Name"
+            value={selectedUser?.name || ""}
+            onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value } as IUser)}
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              value={selectedUser?.email || ""}
-              onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value } as IUser)}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            />
-          </div>
+          <InputText
+            label="Email"
+            type="email"
+            value={selectedUser?.email || ""}
+            onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value } as IUser)}
+          />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Role</label>
-            <select
-              value={selectedUser?.userRole || "technician"}
-              onChange={(e) =>
-                setSelectedUser({
-                  ...selectedUser,
-                  userRole: e.target.value as UserRole,
-                } as IUser)
-              }
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            >
-              <option value="technician" selected>
-                Teknisi
-              </option>
-              <option value="manager" selected>
-                Manajer
-              </option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
+          <InputSelect
+            label="Role"
+            value={selectedUser?.userRole || "technician"}
+            onChange={(e) =>
+              setSelectedUser({
+                ...selectedUser,
+                userRole: e.target.value as UserRole,
+              } as IUser)
+            }
+            options={[
+              { label: "Technician", value: "technician" },
+              { label: "Manager", value: "manager" },
+              { label: "Admin", value: "admin" },
+            ]}
+          />
         </div>
       </ModalForm>
 

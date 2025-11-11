@@ -47,6 +47,7 @@ export function useApiForm({ onSuccess, onError }: UseApiFormOptions = {}) {
       onSuccess?.(data)
       return { success: true, data }
     } catch (err) {
+      console.log(err)
       setErrorMessages(["Network error or unexpected issue"])
       onError?.(err)
       return { success: false, data: null }
