@@ -7,7 +7,8 @@ export interface IUser extends Document {
   passwordHash: string
   name: string
   email: string
-  userRole: "admin" | "user" | "technician"
+  phoneNumber: string
+  userRole: "admin" | "manager" | "technician"
 }
 
 const UserSchema = new Schema<IUser>(

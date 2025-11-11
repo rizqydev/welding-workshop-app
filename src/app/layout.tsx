@@ -3,6 +3,7 @@ import "./globals.css"
 import { Providers } from "./provider"
 import { ThemeProvider } from "@/context/ThemeContext"
 import { SidebarProvider } from "@/context/SidebarContext"
+import { ToastProvider } from "@/context/ToastContext" // ✅ add import
 
 export const metadata: Metadata = {
   title: process.env.APP_NAME,
@@ -19,7 +20,10 @@ export default function RootLayout({
       <body className="antialiased">
         <ThemeProvider>
           <SidebarProvider>
-            <Providers>{children}</Providers>
+            <Providers>
+              {/* ✅ Wrap the entire app with ToastProvider */}
+              <ToastProvider>{children}</ToastProvider>
+            </Providers>
           </SidebarProvider>
         </ThemeProvider>
       </body>
