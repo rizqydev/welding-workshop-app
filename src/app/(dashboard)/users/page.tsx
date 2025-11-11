@@ -1,12 +1,12 @@
 "use client"
 
-import { Suspense, useEffect, useState } from "react"
-import { useApiForm } from "@/hooks/useApiForm"
+import { Suspense, useState } from "react"
 import Table from "@/components/common/Table"
-import { ModalForm } from "@/components/common/ModalForm"
 import { ConfirmModal } from "@/components/common/ConfirmModal"
+import { useToast } from "@/context/ToastContext"
+import { ModalForm } from "@/components/common/ModalForm"
 
-type UserRole = "admin" | "technician"
+type UserRole = "admin" | "technician" | "manager"
 
 interface IUser {
   _id?: string
@@ -18,60 +18,70 @@ interface IUser {
 }
 
 export default function UsersPage() {
-  const [users, setUsers] = useState<IUser[]>([])
-  const [isLoadingPage, setLoadingPage] = useState(true)
-  const [isFormOpen, setFormOpen] = useState(false)
-  const [isDeleteOpen, setDeleteOpen] = useState(false)
-  const [selectedUser, setSelectedUser] = useState<IUser | null>(null)
-  const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const pageSize = 5
-
-  const { submitRequest, isSubmitting } = useApiForm({
-    onSuccess: () => {
-      fetchUsers()
-      setFormOpen(false)
-      setDeleteOpen(false)
-    },
+  const [selectedUser, setSelectedUser] = useState<Partial<IUser>>({
+    _id: "",
+    name: "",
+    username: "",
+    email: "",
+    userRole: "technician",
+    password: "",
   })
 
-  async function fetchUsers() {
-    setLoadingPage(true)
-    const res = await fetch(`/api/users?page=${page}&limit=${pageSize}`)
-    const data = await res.json()
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [refreshKey, setRefreshKey] = useState(0)
 
-    setLoadingPage(false)
-    setUsers(data.users || [])
-    setTotalPages(data.totalPages || 1)
+  const { showToast } = useToast()
+
+  const openCreate = () => {
+    setSelectedUser({
+      _id: "",
+      name: "",
+      username: "",
+      email: "",
+      userRole: "technician",
+      password: "",
+    })
+    setIsFormOpen(true)
   }
 
-  useEffect(() => {
-    fetchUsers()
-  }, [page])
-
-  const openForm = (user?: IUser) => {
-    setSelectedUser(user || null)
-    setFormOpen(true)
-  }
-
-  const openDelete = (user: IUser) => {
+  const openEdit = (user: Partial<IUser>) => {
     setSelectedUser(user)
-    setDeleteOpen(true)
+    setIsFormOpen(true)
   }
 
-  const handleFormSubmit = async (submitRequestFn: any) => {
+  const openDelete = (user: Partial<IUser>) => {
+    setSelectedUser(user)
+    setIsDeleteOpen(true)
+  }
+
+  const handleSave = async (submitRequestFn: any) => {
     const userToSubmit = selectedUser
-    if (userToSubmit !== null && !userToSubmit?.userRole) {
-      userToSubmit.userRole = "technician"
-    }
+
     const url = selectedUser?._id ? `/api/users/${selectedUser._id}` : `/api/users`
     const method = selectedUser?._id ? "PUT" : "POST"
-    await submitRequestFn(url, method, userToSubmit)
+    const result = await submitRequestFn(url, method, userToSubmit)
+
+    if (result.success) {
+      setRefreshKey((k) => k + 1)
+    }
   }
 
   const handleDelete = async () => {
     if (!selectedUser?._id) return
-    await submitRequest(`/api/users/${selectedUser._id}`, "DELETE")
+    setLoading(true)
+    try {
+      const res = await fetch(`/api/users/${selectedUser._id}`, { method: "DELETE" })
+      if (!res.ok) throw new Error("Failed to delete user")
+      setIsDeleteOpen(false)
+      setRefreshKey((k) => k + 1)
+    } catch (error) {
+      console.error("Delete error:", error)
+      showToast("Failed to delete user")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -79,28 +89,39 @@ export default function UsersPage() {
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold text-gray-800">Users</h1>
         <button
-          onClick={() => openForm()}
+          onClick={openCreate}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
-          Add User
+          + Add User
         </button>
       </div>
+
       <Suspense fallback={<div>Loading</div>}>
         <Table
+          key={refreshKey}
+          apiEndpoint="/api/users"
           columns={[
-            { key: "username", header: "Username" },
-            { key: "email", header: "Email" },
-            { key: "name", header: "Name" },
-            { key: "userRole", header: "Role" },
+            { key: "name", label: "Name" },
+            { key: "username", label: "Username" },
+            {
+              key: "userRole",
+              label: "Role",
+              render: (value) =>
+                typeof value === "string" ? value.charAt(0).toUpperCase() + value.slice(1) : "-",
+            },
           ]}
-          data={users}
-          loading={isLoadingPage}
-          actions={(row) => (
-            <div className="flex gap-2">
-              <button onClick={() => openForm(row)} className="text-blue-600 hover:underline">
+          renderActions={(user) => (
+            <div className="flex justify-center gap-2">
+              <button
+                onClick={() => openEdit(user)}
+                className="px-2 py-1 text-blue-600 hover:text-blue-800"
+              >
                 Edit
               </button>
-              <button onClick={() => openDelete(row)} className="text-red-600 hover:underline">
+              <button
+                onClick={() => openDelete(user)}
+                className="px-2 py-1 text-red-600 hover:text-red-800"
+              >
                 Delete
               </button>
             </div>
@@ -108,33 +129,12 @@ export default function UsersPage() {
         />
       </Suspense>
 
-      {/* Pagination */}
-      <div className="flex justify-end items-center gap-3 mt-4">
-        <button
-          onClick={() => setPage((p) => Math.max(1, p - 1))}
-          disabled={page === 1}
-          className="px-3 py-1 bg-gray-100 rounded-md disabled:opacity-50"
-        >
-          Prev
-        </button>
-        <span className="text-sm text-gray-700">
-          Page {page} of {totalPages}
-        </span>
-        <button
-          onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-          disabled={page === totalPages}
-          className="px-3 py-1 bg-gray-100 rounded-md disabled:opacity-50"
-        >
-          Next
-        </button>
-      </div>
-
       {/* Add / Edit Modal */}
       <ModalForm
         isOpen={isFormOpen}
-        onClose={() => setFormOpen(false)}
+        onClose={() => setIsFormOpen(false)}
         title={selectedUser?._id ? "Edit User" : "Add User"}
-        onSubmit={handleFormSubmit}
+        onSubmit={handleSave}
         submitLabel={selectedUser?._id ? "Update" : "Create"}
       >
         <div className="space-y-3">
@@ -164,21 +164,21 @@ export default function UsersPage() {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Email</label>
-            <input
-              type="email"
-              value={selectedUser?.email || ""}
-              onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value } as IUser)}
-              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-            />
-          </div>
-
-          <div>
             <label className="block text-sm font-medium text-gray-700">Name</label>
             <input
               type="text"
               value={selectedUser?.name || ""}
               onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value } as IUser)}
+              className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              value={selectedUser?.email || ""}
+              onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value } as IUser)}
               className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
             />
           </div>
@@ -198,6 +198,9 @@ export default function UsersPage() {
               <option value="technician" selected>
                 Teknisi
               </option>
+              <option value="manager" selected>
+                Manajer
+              </option>
               <option value="admin">Admin</option>
             </select>
           </div>
@@ -207,11 +210,11 @@ export default function UsersPage() {
       {/* Delete Confirmation Modal */}
       <ConfirmModal
         isOpen={isDeleteOpen}
-        onClose={() => setDeleteOpen(false)}
-        title="Delete User"
-        message={`Are you sure you want to delete ${selectedUser?.username}?`}
+        onClose={() => setIsDeleteOpen(false)}
         onConfirm={handleDelete}
-        isLoading={isSubmitting}
+        title="Delete User"
+        message={`Are you sure you want to delete "${selectedUser?.name}"?`}
+        isLoading={loading}
       />
     </div>
   )

@@ -5,8 +5,8 @@ export const userSchema = z.object({
   username: z.string().min(3, "Username is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   name: z.string().min(1, "Name is required"),
-  email: z.email().min(1, "Name is required"),
-  userRole: z.enum(["admin", "user", "technician"]),
+  email: z.email().min(1, "Email is required"),
+  userRole: z.enum(["admin", "manager", "technician"]),
 })
 
 export const userUpdateSchema = z.object({
@@ -14,7 +14,7 @@ export const userUpdateSchema = z.object({
   password: z.string().optional(),
   email: z.string().min(6).optional(),
   name: z.string().optional(),
-  userRole: z.enum(["admin", "user", "technician"]).optional(),
+  userRole: z.enum(["admin", "manager", "technician"]).optional(),
 })
 
 export const userRegisterSchema = z.object({
@@ -22,7 +22,7 @@ export const userRegisterSchema = z.object({
   password: z.string().min(6),
   name: z.string().min(1),
   email: z.email(),
-  userRole: z.enum(["user", "admin"]).default("user"),
+  userRole: z.enum(["admin", "manager", "technician"]).default("technician"),
 })
 
 export type UserInput = z.infer<typeof userSchema>
