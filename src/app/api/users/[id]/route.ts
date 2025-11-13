@@ -12,9 +12,10 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
   return NextResponse.json(user)
 }
 
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   await connectDB()
   try {
+    const { id } = await params
     const body = await req.json()
     const parsed = userUpdateSchema.safeParse(body)
     if (!parsed.success) {
@@ -22,14 +23,14 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
     }
 
     const update: any = { ...parsed.data }
+    console.log("update", update)
+
     if (update.password) {
       update.passwordHash = await bcrypt.hash(update.password, 10)
       delete update.password
     }
 
-    const user = await User.findByIdAndUpdate(params.id, update, { new: true }).select(
-      "-passwordHash",
-    )
+    const user = await User.findByIdAndUpdate(id, update, { new: true }).select("-passwordHash")
     return NextResponse.json(user)
   } catch (err) {
     // @ts-ignore

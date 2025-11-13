@@ -15,6 +15,7 @@ interface IUser {
   username: string
   email: string
   name: string
+  phoneNumber: string
   userRole: UserRole
   password?: string
 }
@@ -25,6 +26,7 @@ export default function UsersPage() {
     name: "",
     username: "",
     email: "",
+    phoneNumber: "",
     userRole: "technician",
     password: "",
   })
@@ -41,6 +43,7 @@ export default function UsersPage() {
       _id: "",
       name: "",
       username: "",
+      phoneNumber: "",
       email: "",
       userRole: "technician",
       password: "",
@@ -166,6 +169,14 @@ export default function UsersPage() {
             value={selectedUser?.name || ""}
             required
             onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value } as IUser)}
+          />
+
+          <InputText
+            label="Phone Number"
+            value={selectedUser?.phoneNumber || ""}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, phoneNumber: e.target.value } as IUser)
+            }
           />
 
           <InputText
