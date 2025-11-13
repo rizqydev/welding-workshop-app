@@ -22,16 +22,12 @@ export default function ReverseGeocode() {
   useEffect(() => {
     const fetchAddress = async () => {
       if (latitude && longitude) {
-        // const apiKey = "YOUR_GOOGLE_MAPS_API_KEY" // Replace with your actual API key
-        // const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
         const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
 
         try {
           const data = await fetchApi<BigdataCloudReverseGeo>(url)
 
-          console.log("data", data)
-
-          setAddress(data.city)
+          setAddress(data.locality + ", " + data.city)
         } catch (error) {
           console.error("Error fetching address:", error)
           setAddress("Error retrieving address")
