@@ -143,6 +143,7 @@ export default function UsersPage() {
           <InputText
             label="Username"
             type="text"
+            required
             value={selectedUser?.username || ""}
             onChange={(e) =>
               setSelectedUser({ ...selectedUser, username: e.target.value } as IUser)
@@ -153,6 +154,7 @@ export default function UsersPage() {
             <InputText
               label="Password"
               type="password"
+              required
               onChange={(e) =>
                 setSelectedUser({ ...selectedUser, password: e.target.value } as IUser)
               }
@@ -162,6 +164,7 @@ export default function UsersPage() {
           <InputText
             label="Name"
             value={selectedUser?.name || ""}
+            required
             onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value } as IUser)}
           />
 
