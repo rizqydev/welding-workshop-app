@@ -8,13 +8,14 @@ import { ModalForm } from "@/components/common/ModalForm"
 import { InputText } from "@/components/ui/form/InputText"
 import { InputSelect } from "@/components/ui/form/InputSelect"
 
-type UserRole = "admin" | "technician" | "manager"
+type UserRole = "admin" | "technician" | "manager" | "warehouse"
 
 interface IUser {
   _id?: string
   username: string
   email: string
   name: string
+  phoneNumber: string
   userRole: UserRole
   password?: string
 }
@@ -25,6 +26,7 @@ export default function UsersPage() {
     name: "",
     username: "",
     email: "",
+    phoneNumber: "",
     userRole: "technician",
     password: "",
   })
@@ -41,6 +43,7 @@ export default function UsersPage() {
       _id: "",
       name: "",
       username: "",
+      phoneNumber: "",
       email: "",
       userRole: "technician",
       password: "",
@@ -169,6 +172,14 @@ export default function UsersPage() {
           />
 
           <InputText
+            label="Phone Number"
+            value={selectedUser?.phoneNumber || ""}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, phoneNumber: e.target.value } as IUser)
+            }
+          />
+
+          <InputText
             label="Email"
             type="email"
             value={selectedUser?.email || ""}
@@ -188,6 +199,7 @@ export default function UsersPage() {
               { label: "Technician", value: "technician" },
               { label: "Manager", value: "manager" },
               { label: "Admin", value: "admin" },
+              { label: "Warehouse", value: "warehouse" },
             ]}
           />
         </div>

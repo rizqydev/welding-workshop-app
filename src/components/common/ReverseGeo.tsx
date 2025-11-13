@@ -1,6 +1,7 @@
 "use client"
 import { useFetch } from "@/hooks/useFetch"
 import { BigdataCloudReverseGeo } from "@/lib/definitions"
+import { Button } from "@headlessui/react"
 import React, { useState, useEffect } from "react"
 
 export default function ReverseGeocode() {
@@ -19,32 +20,30 @@ export default function ReverseGeocode() {
     }
   }, [])
 
-  useEffect(() => {
-    const fetchAddress = async () => {
-      if (latitude && longitude) {
-        // const apiKey = "YOUR_GOOGLE_MAPS_API_KEY" // Replace with your actual API key
-        // const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
-        const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
+  const fetchAddress = async () => {
+    if (latitude && longitude) {
+      const url = `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
 
-        try {
-          const data = await fetchApi<BigdataCloudReverseGeo>(url)
+      try {
+        const data = await fetchApi<BigdataCloudReverseGeo>(url)
 
-          console.log("data", data)
-
-          setAddress(data.city)
-        } catch (error) {
-          console.error("Error fetching address:", error)
-          setAddress("Error retrieving address")
-        }
+        setAddress(data.locality + ", " + data.city)
+      } catch (error) {
+        console.error("Error fetching address:", error)
+        setAddress("Error retrieving address")
       }
     }
-
-    fetchAddress()
-  }, [latitude, longitude]) // Re-run when latitude or longitude changes
+  }
 
   return (
     <div>
-      <h2>Reverse Geocoding Example</h2>
+      <Button
+        disabled={address !== ""}
+        onClick={() => fetchAddress()}
+        className="rounded bg-sky-600 px-4 py-2 text-sm text-white data-active:bg-sky-700 data-hover:bg-sky-500"
+      >
+        Dapatkan Lokasi
+      </Button>
       {latitude && longitude ? (
         <p>
           Coordinates: {latitude}, {longitude}
