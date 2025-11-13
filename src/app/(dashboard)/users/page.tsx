@@ -8,7 +8,7 @@ import { ModalForm } from "@/components/common/ModalForm"
 import { InputText } from "@/components/ui/form/InputText"
 import { InputSelect } from "@/components/ui/form/InputSelect"
 
-type UserRole = "admin" | "technician" | "manager"
+type UserRole = "admin" | "technician" | "manager" | "warehouse"
 
 interface IUser {
   _id?: string
@@ -199,6 +199,7 @@ export default function UsersPage() {
               { label: "Technician", value: "technician" },
               { label: "Manager", value: "manager" },
               { label: "Admin", value: "admin" },
+              { label: "Warehouse", value: "warehouse" },
             ]}
           />
         </div>

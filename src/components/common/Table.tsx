@@ -106,7 +106,7 @@ export default function Table<T>({
                         key={String(col.key)}
                         className="px-4 py-2 border-b"
                         title={
-                          typeof rawValue === "string" && rawValue.length > 30 ? rawValue : "xx"
+                          typeof rawValue === "string" && rawValue.length > 30 ? rawValue : false
                         }
                       >
                         {displayValue}

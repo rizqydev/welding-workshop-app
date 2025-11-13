@@ -8,6 +8,7 @@ import {
   BoxCubeIcon,
   CalenderIcon,
   ChevronDownIcon,
+  DollarLineIcon,
   GridIcon,
   HorizontaLDots,
   ListIcon,
@@ -33,35 +34,47 @@ const navItems: NavItem[] = [
     path: "/dashboard",
     // subItems: [{ name: 'Ecommerce', path: '/', pro: false }],
   },
-  // {
-  //   icon: <CalenderIcon />,
-  //   name: 'Calendar',
-  //   path: '/calendar',
-  // },
+  {
+    icon: <ListIcon />,
+    name: "Projects",
+    path: "/calendar",
+  },
+  {
+    icon: <DollarLineIcon />,
+    name: "Purchases",
+    path: "/calendar",
+  },
+
+  {
+    name: "Inventory",
+    icon: <BoxCubeIcon />,
+    subItems: [
+      { name: "Tools", path: "/blank", pro: false },
+      { name: "Material", path: "/error-404", pro: false },
+    ],
+  },
+
+  /* {
+    name: "Products",
+    icon: <ListIcon />,
+    path: "/products",
+  }, */
+  {
+    icon: <CalenderIcon />,
+    name: "Attendance",
+    path: "/calendar",
+  },
   {
     icon: <UserCircleIcon />,
     name: "Users",
     path: "/users",
   },
-
   {
-    name: "Products",
-    icon: <ListIcon />,
-    path: "/products",
+    name: "Settings",
+    icon: <GridIcon />,
+    path: "/settings",
+    // subItems: [{ name: 'Basic Tables', path: '/basic-tables', pro: false }],
   },
-  // {
-  //   name: 'Tables',
-  //   icon: <TableIcon />,
-  //   subItems: [{ name: 'Basic Tables', path: '/basic-tables', pro: false }],
-  // },
-  // {
-  //   name: 'Pages',
-  //   icon: <PageIcon />,
-  //   subItems: [
-  //     { name: 'Blank Page', path: '/blank', pro: false },
-  //     { name: '404 Error', path: '/error-404', pro: false },
-  //   ],
-  // },
 ]
 
 // const othersItems: NavItem[] = [
