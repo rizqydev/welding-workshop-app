@@ -108,7 +108,10 @@ export default function Table<T>({
                       </td>
                     ))}
                   {renderActions && (
-                    <td className="p-3 border">
+                    <td
+                      className={`p-3 border
+                        ${actionsColumnFixed ? "sticky right-0 shadow-md z-10" : ""}`}
+                    >
                       <div className="h-4 bg-gray-200 rounded w-1/2" />
                     </td>
                   )}

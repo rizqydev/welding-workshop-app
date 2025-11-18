@@ -101,7 +101,7 @@ export default function UsersPage() {
         </button>
       </div>
 
-      <Suspense fallback={<div>Loading</div>}>
+      <Suspense fallback={<div>Loading..</div>}>
         <Table
           key={refreshKey}
           apiEndpoint="/api/users"
@@ -110,7 +110,6 @@ export default function UsersPage() {
             { key: "_id", label: "ID", hiddenKey: "_id" },
             { key: "name", label: "Name" },
             { key: "username", label: "Username", additionalClass: "px-10" },
-            { key: "username", label: "Username", additionalClass: "px-40" },
             { key: "email", label: "Email" },
             { key: "phoneNumber", label: "Phone Number" },
             {
@@ -119,7 +118,11 @@ export default function UsersPage() {
               render: (value) =>
                 typeof value === "string" ? value.charAt(0).toUpperCase() + value.slice(1) : "-",
             },
-            { key: "status", label: "Status" },
+            {
+              key: "status",
+              label: "status",
+              render: (value) => (value ? "Active" : "Inactive"),
+            },
           ]}
           renderActions={(user) => (
             <div className="flex justify-center gap-2">
