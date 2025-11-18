@@ -109,7 +109,7 @@ export default function Table<T>({
                     ))}
                   {renderActions && (
                     <td
-                      className={`p-3 border
+                      className={`p-3 border 
                         ${actionsColumnFixed ? "sticky right-0 shadow-md z-10" : ""}`}
                     >
                       <div className="h-4 bg-gray-200 rounded w-1/2" />
@@ -153,7 +153,7 @@ export default function Table<T>({
 
                   {renderActions && (
                     <td
-                      className={`px-4 py-2 border-b text-center bg-white ${
+                      className={`px-4 py-2 border-b text-center bg-white dark:bg-gray-600 ${
                         actionsColumnFixed ? "sticky right-0 shadow-md z-10" : ""
                       }`}
                       style={{ width: actionsColumnWidth }}
