@@ -105,15 +105,21 @@ export default function UsersPage() {
         <Table
           key={refreshKey}
           apiEndpoint="/api/users"
+          actionsColumnFixed={true}
           columns={[
+            { key: "_id", label: "ID", hiddenKey: "_id" },
             { key: "name", label: "Name" },
-            { key: "username", label: "Username" },
+            { key: "username", label: "Username", additionalClass: "px-10" },
+            { key: "username", label: "Username", additionalClass: "px-40" },
+            { key: "email", label: "Email" },
+            { key: "phoneNumber", label: "Phone Number" },
             {
               key: "userRole",
               label: "Role",
               render: (value) =>
                 typeof value === "string" ? value.charAt(0).toUpperCase() + value.slice(1) : "-",
             },
+            { key: "status", label: "Status" },
           ]}
           renderActions={(user) => (
             <div className="flex justify-center gap-2">
@@ -200,6 +206,8 @@ export default function UsersPage() {
               { label: "Manager", value: "manager" },
               { label: "Admin", value: "admin" },
               { label: "Warehouse", value: "warehouse" },
+              { label: "Finishing", value: "finishing" },
+              { label: "Helper", value: "helper" },
             ]}
           />
         </div>
