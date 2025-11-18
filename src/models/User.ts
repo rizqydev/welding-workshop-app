@@ -8,7 +8,7 @@ export interface IUser extends Document {
   name: string
   email: string
   phoneNumber: string
-  userRole: "admin" | "manager" | "technician" | "warehouse"
+  userRole: "admin" | "manager" | "technician" | "warehouse" | "finishing" | "helper"
 }
 
 const UserSchema = new Schema<IUser>(
@@ -20,7 +20,7 @@ const UserSchema = new Schema<IUser>(
     phoneNumber: { type: String, required: true },
     userRole: {
       type: String,
-      enum: ["admin", "manager", "warehouse", "technician"],
+      enum: ["admin", "manager", "warehouse", "technician", "helper", "finishing"],
       required: true,
     },
   },
