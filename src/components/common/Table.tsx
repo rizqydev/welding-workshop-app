@@ -20,6 +20,7 @@ interface TableProps<T> {
   actionsColumnFixed?: boolean // 👈 NEW: sticky right actions column
   actionsColumnWidth?: string // 👈 NEW: width for actions column
   emptyValue?: string
+  filters?: Object
 }
 
 export default function Table<T>({
@@ -30,6 +31,7 @@ export default function Table<T>({
   actionsColumnFixed = false,
   actionsColumnWidth = "120px",
   emptyValue = "-",
+  filters = {},
 }: TableProps<T>) {
   const [data, setData] = useState<T[]>([])
   const [totalPages, setTotalPages] = useState(1)
@@ -38,15 +40,33 @@ export default function Table<T>({
   const { isExpanded, isHovered } = useSidebar()
 
   const mainContentMargin = isExpanded || isHovered ? "lg:w-[71vw] " : "lg:w-[85vw]"
+
   const router = useRouter()
   const searchParams = useSearchParams()
-
   const page = Number(searchParams.get("page")) || 1
 
   const fetchData = async () => {
     setLoading(true)
+
     try {
-      const res = await fetch(`${apiEndpoint}?page=${page}&limit=${pageSize}`)
+      // const res = await fetch(`${apiEndpoint}?limit=${pageSize}&${searchParams.toString()}`)
+      const params = new URLSearchParams()
+
+      // pagination
+      params.set("page", page.toString())
+      params.set("limit", pageSize.toString())
+
+      // apply filters
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value) params.set(key, value)
+      })
+
+      // if (Object.entries(filters).length > 0) {
+      //   params.set("page", "1")
+      // }
+
+      const res = await fetch(`${apiEndpoint}?${params.toString()}`)
+
       const result = await res.json()
       setData(result?.data || result?.products || [])
       setTotalPages(result?.totalPages || 1)
@@ -60,6 +80,13 @@ export default function Table<T>({
   useEffect(() => {
     fetchData()
   }, [page])
+
+  // useEffect(() => {
+  //   console.log("filter duluan")
+
+  //   const params = new URLSearchParams()
+  //   params.set("page", "1")
+  // }, [filters])
 
   const handlePageChange = (newPage: number) => {
     router.push(`?page=${newPage}`)
@@ -108,7 +135,10 @@ export default function Table<T>({
                       </td>
                     ))}
                   {renderActions && (
-                    <td className="p-3 border">
+                    <td
+                      className={`p-3 border 
+                        ${actionsColumnFixed ? "sticky right-0 shadow-md z-10" : ""}`}
+                    >
                       <div className="h-4 bg-gray-200 rounded w-1/2" />
                     </td>
                   )}
@@ -150,7 +180,7 @@ export default function Table<T>({
 
                   {renderActions && (
                     <td
-                      className={`px-4 py-2 border-b text-center bg-white ${
+                      className={`px-4 py-2 border-b text-center bg-white dark:bg-gray-600 ${
                         actionsColumnFixed ? "sticky right-0 shadow-md z-10" : ""
                       }`}
                       style={{ width: actionsColumnWidth }}
