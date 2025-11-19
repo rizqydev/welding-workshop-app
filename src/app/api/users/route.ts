@@ -11,10 +11,35 @@ export async function GET(req: Request) {
   const page = parseInt(searchParams.get("page") || "1", 10)
   const limit = parseInt(searchParams.get("limit") || "10", 10)
   const skip = (page - 1) * limit
+  // Extract filters
+  const name = searchParams.get("name") || ""
+  const username = searchParams.get("username") || ""
+  const email = searchParams.get("email") || ""
+  const phoneNumber = searchParams.get("phoneNumber") || ""
+  // Build dynamic filter
+  const filter: any = {}
+
+  if (name) {
+    filter.name = { $regex: name, $options: "i" }
+  }
+
+  if (username) {
+    filter.username = { $regex: username, $options: "i" }
+  }
+
+  if (email) {
+    filter.email = { $regex: email, $options: "i" }
+  }
+
+  if (phoneNumber) {
+    filter.phoneNumber = { $regex: phoneNumber, $options: "i" }
+  }
+
+  console.log("filter", filter)
 
   const [users, total] = await Promise.all([
-    User.find({}, { passwordHash: 0 }).skip(skip).limit(limit),
-    User.countDocuments(),
+    User.find(filter, { passwordHash: 0 }).skip(skip).limit(limit),
+    User.countDocuments(filter),
   ])
 
   return NextResponse.json({

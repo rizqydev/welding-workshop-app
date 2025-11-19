@@ -35,6 +35,18 @@ export default function UsersPage() {
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
+  const [filters, setFilters] = useState({
+    name: "",
+    username: "",
+    email: "",
+    phoneNumber: "",
+  })
+
+  const applyFilter = async () => {
+    setRefreshKey((k) => k + 1)
+    setIsFilterOpen(false)
+  }
 
   const { showToast } = useToast()
 
@@ -93,12 +105,20 @@ export default function UsersPage() {
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-semibold text-gray-800">Users</h1>
-        <button
-          onClick={openCreate}
-          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-        >
-          + Add User
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setIsFilterOpen(true)}
+            className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+          >
+            Filter
+          </button>
+          <button
+            onClick={openCreate}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+          >
+            + Add User
+          </button>
+        </div>
       </div>
 
       <Suspense fallback={<div>Loading..</div>}>
@@ -106,6 +126,7 @@ export default function UsersPage() {
           key={refreshKey}
           apiEndpoint="/api/users"
           actionsColumnFixed={true}
+          filters={filters}
           columns={[
             { key: "_id", label: "ID", hiddenKey: "_id" },
             { key: "name", label: "Name" },
@@ -225,6 +246,40 @@ export default function UsersPage() {
         message={`Are you sure you want to delete "${selectedUser?.name}"?`}
         isLoading={loading}
       />
+
+      <ModalForm
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        title="Filter Users"
+        submitLabel="Search"
+        onSubmit={applyFilter}
+      >
+        <div className="space-y-3">
+          <InputText
+            label="Name"
+            value={filters.name}
+            onChange={(e) => setFilters({ ...filters, name: e.target.value })}
+          />
+
+          <InputText
+            label="Username"
+            value={filters.username}
+            onChange={(e) => setFilters({ ...filters, username: e.target.value })}
+          />
+
+          <InputText
+            label="Email"
+            value={filters.email}
+            onChange={(e) => setFilters({ ...filters, email: e.target.value })}
+          />
+
+          <InputText
+            label="Phone Number"
+            value={filters.phoneNumber}
+            onChange={(e) => setFilters({ ...filters, phoneNumber: e.target.value })}
+          />
+        </div>
+      </ModalForm>
     </div>
   )
 }
