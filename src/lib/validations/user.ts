@@ -2,12 +2,18 @@
 import { z } from "zod"
 
 export const userSchema = z.object({
-  username: z.string().min(3, "Username is required"),
+  username: z
+    .string()
+    .refine((s) => !s.includes(" "), {
+      message: "Username cannot contain spacing",
+    })
+    .min(3, "Username is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   name: z.string().min(1, "Name is required"),
   email: z.email().min(1, "Email is required"),
   phoneNumber: z.string().min(1, "Phone Number is required"),
   userRole: z.enum(["admin", "manager", "technician", "warehouse", "helper", "finishing"]),
+  status: z.enum(["true", "false"]),
 })
 
 export const userUpdateSchema = z.object({
@@ -19,6 +25,8 @@ export const userUpdateSchema = z.object({
   userRole: z
     .enum(["admin", "manager", "technician", "warehouse", "helper", "finishing"])
     .optional(),
+
+  status: z.enum(["true", "false"]),
 })
 
 export const userRegisterSchema = z.object({
@@ -27,6 +35,7 @@ export const userRegisterSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.email().min(1, "Email is required"),
   phoneNumber: z.string().min(1, "Phone Number is required"),
+  status: z.enum(["true", "false"]),
   userRole: z
     .enum(["admin", "manager", "technician", "warehouse", "helper", "finishing"])
     .default("technician"),

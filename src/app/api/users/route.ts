@@ -16,6 +16,8 @@ export async function GET(req: Request) {
   const username = searchParams.get("username") || ""
   const email = searchParams.get("email") || ""
   const phoneNumber = searchParams.get("phoneNumber") || ""
+  const status = searchParams.get("status") || ""
+
   // Build dynamic filter
   const filter: any = {}
 
@@ -35,7 +37,9 @@ export async function GET(req: Request) {
     filter.phoneNumber = { $regex: phoneNumber, $options: "i" }
   }
 
-  console.log("filter", filter)
+  if (status) {
+    filter.status = status === "true"
+  }
 
   const [users, total] = await Promise.all([
     User.find(filter, { passwordHash: 0 }).skip(skip).limit(limit),
@@ -58,8 +62,19 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: parsed.error!.issues }, { status: 400 })
   }
 
-  const { username, password, name, userRole, email } = parsed.data
+  const { username, password, name, userRole, email, phoneNumber, status } = parsed.data
   const passwordHash = await bcrypt.hash(password, 10)
-  const user = await User.create({ username, passwordHash, name, userRole, email })
-  return NextResponse.json({ _id: user._id, username, name, userRole, email }, { status: 201 })
+  const user = await User.create({
+    username,
+    passwordHash,
+    name,
+    userRole,
+    email,
+    phoneNumber,
+    status,
+  })
+  return NextResponse.json(
+    { _id: user._id, username, name, userRole, email, phoneNumber, status: status === "true" },
+    { status: 201 },
+  )
 }

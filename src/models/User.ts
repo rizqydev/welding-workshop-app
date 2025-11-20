@@ -9,6 +9,7 @@ export interface IUser extends Document {
   email: string
   phoneNumber: string
   userRole: "admin" | "manager" | "technician" | "warehouse" | "finishing" | "helper"
+  status: boolean
 }
 
 const UserSchema = new Schema<IUser>(
@@ -23,6 +24,7 @@ const UserSchema = new Schema<IUser>(
       enum: ["admin", "manager", "warehouse", "technician", "helper", "finishing"],
       required: true,
     },
+    status: { type: Boolean, default: false },
   },
   { timestamps: true },
 )
