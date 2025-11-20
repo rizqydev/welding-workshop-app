@@ -49,21 +49,17 @@ export default function Table<T>({
     setLoading(true)
 
     try {
-      // const res = await fetch(`${apiEndpoint}?limit=${pageSize}&${searchParams.toString()}`)
       const params = new URLSearchParams()
 
       // pagination
       params.set("page", page.toString())
-      params.set("limit", pageSize.toString())
 
       // apply filters
       Object.entries(filters).forEach(([key, value]) => {
         if (value) params.set(key, value)
       })
 
-      // if (Object.entries(filters).length > 0) {
-      //   params.set("page", "1")
-      // }
+      params.set("limit", pageSize.toString())
 
       const res = await fetch(`${apiEndpoint}?${params.toString()}`)
 
@@ -79,14 +75,7 @@ export default function Table<T>({
 
   useEffect(() => {
     fetchData()
-  }, [page])
-
-  // useEffect(() => {
-  //   console.log("filter duluan")
-
-  //   const params = new URLSearchParams()
-  //   params.set("page", "1")
-  // }, [filters])
+  }, [page, filters])
 
   const handlePageChange = (newPage: number) => {
     router.push(`?page=${newPage}`)
