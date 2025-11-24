@@ -1,9 +1,9 @@
-// app/api/users/route.ts
+// app/api/projects/route.ts
 import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import dbConnect from "@/lib/mongoose"
-import { userSchema } from "@/lib/validations/user"
-import User from "@/models/User"
+import { projectSchema } from "@/lib/validations/project"
+import Project from "@/models/Project"
 
 export async function GET(req: Request) {
   await dbConnect()
@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 
   // Extract filters
   const name = searchParams.get("name") || ""
-  const username = searchParams.get("username") || ""
+  const projectname = searchParams.get("projectname") || ""
   const email = searchParams.get("email") || ""
   const phoneNumber = searchParams.get("phoneNumber") || ""
   const status = searchParams.get("status") || ""
@@ -26,8 +26,8 @@ export async function GET(req: Request) {
     filter.name = { $regex: name, $options: "i" }
   }
 
-  if (username) {
-    filter.username = { $regex: username, $options: "i" }
+  if (projectname) {
+    filter.projectname = { $regex: projectname, $options: "i" }
   }
 
   if (email) {
@@ -42,13 +42,13 @@ export async function GET(req: Request) {
     filter.status = status === "true"
   }
 
-  const [users, total] = await Promise.all([
-    User.find(filter, { passwordHash: 0 }).skip(skip).limit(limit),
-    User.countDocuments(filter),
+  const [projects, total] = await Promise.all([
+    Project.find(filter, { passwordHash: 0 }).skip(skip).limit(limit),
+    Project.countDocuments(filter),
   ])
 
   return NextResponse.json({
-    data: users,
+    data: projects,
     totalPages: Math.ceil(total / limit),
     total,
   })
@@ -57,25 +57,45 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   await dbConnect()
   const body = await req.json()
-  const parsed = userSchema.safeParse(body)
+  //   console.log("body", body)
+  const sd = body.startDate ? new Date(body.startDate) : null
+  const ed = body.endDate ? new Date(body.endDate) : null
+
+  const parsed = projectSchema.safeParse({
+    ...body,
+    startDate: sd,
+    endDate: ed,
+  })
+  //   console.log("parsed", parsed)
 
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error!.issues }, { status: 400 })
   }
 
-  const { username, password, name, userRole, email, phoneNumber, status } = parsed.data
-  const passwordHash = await bcrypt.hash(password, 10)
-  const user = await User.create({
-    username,
-    passwordHash,
-    name,
-    userRole,
-    email,
-    phoneNumber,
-    status: status || true,
+  const { projectName, customerName, address, startDate, endDate, typeOfWork, volume, volumeUnit } =
+    parsed.data
+  const project = await Project.create({
+    projectName,
+    customerName,
+    address,
+    startDate,
+    endDate,
+    typeOfWork,
+    volume,
+    volumeUnit,
   })
   return NextResponse.json(
-    { _id: user._id, username, name, userRole, email, phoneNumber, status: status === "true" },
+    {
+      _id: project._id,
+      projectName,
+      customerName,
+      address,
+      startDate,
+      endDate,
+      typeOfWork,
+      volume,
+      volumeUnit,
+    },
     { status: 201 },
   )
 }

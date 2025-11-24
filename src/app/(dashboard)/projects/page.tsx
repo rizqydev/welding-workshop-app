@@ -9,98 +9,100 @@ import { InputText } from "@/components/ui/form/InputText"
 import { InputSelect } from "@/components/ui/form/InputSelect"
 import { useRouter, useSearchParams } from "next/navigation"
 
-type UserRole = "admin" | "technician" | "manager" | "warehouse"
-
-interface IUser {
+interface IProject {
   _id?: string
-  username: string
-  email: string
-  name: string
-  phoneNumber: string
-  userRole: UserRole
-  password?: string
-  status: "true" | "false"
+  projectName: string
+  customerName: string
+  startDate: Date | null
+  endDate: Date | null
+  // name: string
+  // phoneNumber: string
+  // projectRole: ProjectRole
+  // password?: string
+  // status: "true" | "false"
 }
 
-export function UsersComponent() {
+export function ProjectsComponent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const [selectedUser, setSelectedUser] = useState<Partial<IUser>>({
+  const [selectedProject, setSelectedProject] = useState<Partial<IProject>>({
     _id: "",
-    name: "",
-    username: "",
-    email: "",
-    phoneNumber: "",
-    userRole: "technician",
-    password: "",
-    status: "true",
+    projectName: "",
+    customerName: "",
+    startDate: null,
+    endDate: null,
+    // email: "",
+    // phoneNumber: "",
+    // projectRole: "technician",
+    // password: "",
+    // status: "true",
   })
 
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [refreshKey, setRefreshKey] = useState(0)
-  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
+  // const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false)
 
-  const [filtersDraft, setFiltersDraft] = useState({
-    name: "",
-    username: "",
-    email: "",
-    phoneNumber: "",
-    status: "",
-  })
+  // const [filtersDraft, setFiltersDraft] = useState({
+  //   name: "",
+  //   projectname: "",
+  //   email: "",
+  //   phoneNumber: "",
+  //   status: "",
+  // })
 
   const [appliedFilters, setAppliedFilters] = useState({})
 
-  const applyFilter = async () => {
-    // setRefreshKey((k) => k + 1)
-    const params = new URLSearchParams()
+  // const applyFilter = async () => {
+  //   // setRefreshKey((k) => k + 1)
+  //   const params = new URLSearchParams()
 
-    Object.entries(filtersDraft).forEach(([key, value]) => {
-      if (value && value.trim()) params.set(key, value.trim())
-    })
+  //   Object.entries(filtersDraft).forEach(([key, value]) => {
+  //     if (value && value.trim()) params.set(key, value.trim())
+  //   })
 
-    params.set("page", "1") // Reset to first page
+  //   params.set("page", "1") // Reset to first page
 
-    router.push(`?${params.toString()}`)
+  //   router.push(`?${params.toString()}`)
 
-    setAppliedFilters(filtersDraft)
-    setIsFilterOpen(false)
-  }
+  //   setAppliedFilters(filtersDraft)
+  //   setIsFilterOpen(false)
+  // }
 
   const { showToast } = useToast()
 
   const openCreate = () => {
-    setSelectedUser({
+    setSelectedProject({
       _id: "",
       name: "",
-      username: "",
+      projectname: "",
       phoneNumber: "",
       email: "",
-      userRole: "technician",
+      projectRole: "technician",
       password: "",
       status: "true",
     })
     setIsFormOpen(true)
   }
 
-  const openEdit = (user: Partial<IUser>) => {
-    setSelectedUser(user)
-    setIsFormOpen(true)
-  }
+  // const openEdit = (project: Partial<IProject>) => {
+  //   setSelectedProject(project)
+  //   setIsFormOpen(true)
+  // }
 
-  const openDelete = (user: Partial<IUser>) => {
-    setSelectedUser(user)
+  const openDelete = (project: Partial<IProject>) => {
+    setSelectedProject(project)
     setIsDeleteOpen(true)
   }
 
   const handleSave = async (submitRequestFn: any) => {
-    const userToSubmit = selectedUser
+    const projectToSubmit = selectedProject
 
-    const url = selectedUser?._id ? `/api/users/${selectedUser._id}` : `/api/users`
-    const method = selectedUser?._id ? "PUT" : "POST"
-    const result = await submitRequestFn(url, method, userToSubmit)
+    const url = selectedProject?._id ? `/api/projects/${selectedProject._id}` : `/api/projects`
+    const method = selectedProject?._id ? "PUT" : "POST"
+    const result = await submitRequestFn(url, method, projectToSubmit)
 
     if (result.success) {
       setRefreshKey((k) => k + 1)
@@ -108,39 +110,39 @@ export function UsersComponent() {
   }
 
   const handleDelete = async () => {
-    if (!selectedUser?._id) return
+    if (!selectedProject?._id) return
     setLoading(true)
     try {
-      const res = await fetch(`/api/users/${selectedUser._id}`, { method: "DELETE" })
-      if (!res.ok) throw new Error("Failed to delete user")
+      const res = await fetch(`/api/projects/${selectedProject._id}`, { method: "DELETE" })
+      if (!res.ok) throw new Error("Failed to delete project")
       setIsDeleteOpen(false)
       setRefreshKey((k) => k + 1)
     } catch (error) {
       console.error("Delete error:", error)
-      showToast("Failed to delete user")
+      showToast("Failed to delete project")
     } finally {
       setLoading(false)
     }
   }
 
   useEffect(() => {
-    const username = searchParams.get("username") || ""
+    const projectname = searchParams.get("username") || ""
     const name = searchParams.get("name") || ""
     const email = searchParams.get("email") || ""
     const phoneNumber = searchParams.get("phoneNumber") || ""
     const status = searchParams.get("status") || ""
 
-    setFiltersDraft({
-      // ...filtersDraft,
-      username,
-      name,
-      email,
-      phoneNumber,
-      status,
-    })
+    // setFiltersDraft({
+    //   // ...filtersDraft,
+    //   projectname,
+    //   name,
+    //   email,
+    //   phoneNumber,
+    //   status,
+    // })
 
     setAppliedFilters({
-      username,
+      projectname,
       name,
       email,
       phoneNumber,
@@ -152,56 +154,56 @@ export function UsersComponent() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-semibold text-gray-800">Users</h1>
+        <h1 className="text-2xl font-semibold text-gray-800">Projects</h1>
         <div className="flex gap-2">
-          <button
+          {/* <button
             onClick={() => setIsFilterOpen(true)}
             className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 text-sm"
           >
             Filter
-          </button>
+          </button> */}
           <button
             onClick={openCreate}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
           >
-            + Add User
+            + Add Project
           </button>
         </div>
       </div>
 
       <Table
         key={refreshKey}
-        apiEndpoint="/api/users"
+        apiEndpoint="/api/projects"
         actionsColumnFixed={true}
         filters={appliedFilters}
         columns={[
           { key: "_id", label: "ID", hiddenKey: "_id" },
-          { key: "name", label: "Name" },
-          { key: "username", label: "Username", additionalClass: "px-10" },
-          { key: "email", label: "Email" },
-          { key: "phoneNumber", label: "Phone Number" },
-          {
-            key: "userRole",
-            label: "Role",
-            render: (value) =>
-              typeof value === "string" ? value.charAt(0).toUpperCase() + value.slice(1) : "-",
-          },
-          {
-            key: "status",
-            label: "status",
-            render: (value) => (value ? "Active" : "Inactive"),
-          },
+          { key: "projectName", label: "Project Name", additionalClass: "px-10" },
+          { key: "customerName", label: "Customer Name" },
+          // { key: "email", label: "Email" },
+          // { key: "phoneNumber", label: "Phone Number" },
+          // {
+          //   key: "projectRole",
+          //   label: "Role",
+          //   render: (value) =>
+          //     typeof value === "string" ? value.charAt(0).toUpperCase() + value.slice(1) : "-",
+          // },
+          // {
+          //   key: "status",
+          //   label: "status",
+          //   render: (value) => (value ? "Active" : "Inactive"),
+          // },
         ]}
-        renderActions={(user) => (
+        renderActions={(project) => (
           <div className="flex justify-center gap-2">
-            <button
-              onClick={() => openEdit(user)}
+            {/* <button
+              onClick={() => openEdit(project)}
               className="px-2 py-1 text-blue-600 hover:text-blue-800"
             >
               Edit
-            </button>
+            </button> */}
             <button
-              onClick={() => openDelete(user)}
+              onClick={() => openDelete(project)}
               className="px-2 py-1 text-red-600 hover:text-red-800"
             >
               Delete
@@ -214,62 +216,81 @@ export function UsersComponent() {
       <ModalForm
         isOpen={isFormOpen}
         onClose={() => setIsFormOpen(false)}
-        title={selectedUser?._id ? "Edit User" : "Add User"}
+        title={selectedProject?._id ? "Edit Project" : "Add Project"}
         onSubmit={handleSave}
-        submitLabel={selectedUser?._id ? "Update" : "Create"}
+        submitLabel={selectedProject?._id ? "Update" : "Create"}
       >
         <div className="space-y-3">
           <InputText
-            label="Username"
+            label="Project Name"
             type="text"
             required
-            value={selectedUser?.username || ""}
+            value={selectedProject?.projectName || ""}
             onChange={(e) =>
-              setSelectedUser({ ...selectedUser, username: e.target.value } as IUser)
+              setSelectedProject({ ...selectedProject, projectName: e.target.value } as IProject)
             }
           />
 
-          {!selectedUser?._id && (
+          {/* {!selectedProject?._id && (
             <InputText
               label="Password"
               type="password"
               required
               onChange={(e) =>
-                setSelectedUser({ ...selectedUser, password: e.target.value } as IUser)
+                setSelectedProject({ ...selectedProject, password: e.target.value } as IProject)
               }
             />
-          )}
+          )} */}
 
           <InputText
-            label="Name"
-            value={selectedUser?.name || ""}
+            label="Customer name"
+            value={selectedProject?.customerName || ""}
             required
-            onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value } as IUser)}
+            onChange={(e) =>
+              setSelectedProject({ ...selectedProject, customerName: e.target.value } as IProject)
+            }
           />
 
           <InputText
-            label="Phone Number"
-            value={selectedUser?.phoneNumber || ""}
+            label="Start Date"
+            value={selectedProject?.startDate}
+            type="date"
             onChange={(e) =>
-              setSelectedUser({ ...selectedUser, phoneNumber: e.target.value } as IUser)
+              setSelectedProject({ ...selectedProject, startDate: e.target.value } as IProject)
+            }
+          />
+
+          <InputText
+            label="End Date"
+            value={selectedProject?.endDate}
+            type="date"
+            onChange={(e) =>
+              setSelectedProject({ ...selectedProject, endDate: e.target.value } as IProject)
+            }
+          />
+          {/* <InputText
+            label="Phone Number"
+            value={selectedProject?.phoneNumber || ""}
+            onChange={(e) =>
+              setSelectedProject({ ...selectedProject, phoneNumber: e.target.value } as IProject)
             }
           />
 
           <InputText
             label="Email"
             type="email"
-            value={selectedUser?.email || ""}
-            onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value } as IUser)}
+            value={selectedProject?.email || ""}
+            onChange={(e) => setSelectedProject({ ...selectedProject, email: e.target.value } as IProject)}
           />
 
           <InputSelect
             label="Role"
-            value={selectedUser?.userRole || "technician"}
+            value={selectedProject?.projectRole || "technician"}
             onChange={(e) =>
-              setSelectedUser({
-                ...selectedUser,
-                userRole: e.target.value as UserRole,
-              } as IUser)
+              setSelectedProject({
+                ...selectedProject,
+                projectRole: e.target.value as ProjectRole,
+              } as IProject)
             }
             options={[
               { label: "Technician", value: "technician" },
@@ -283,18 +304,18 @@ export function UsersComponent() {
 
           <InputSelect
             label="Status"
-            value={selectedUser.status}
+            value={selectedProject.status}
             onChange={(e) =>
-              setSelectedUser({
-                ...selectedUser,
+              setSelectedProject({
+                ...selectedProject,
                 status: e.target.value,
-              } as IUser)
+              } as IProject)
             }
             options={[
               { label: "Active", value: "true" },
               { label: "Inactive", value: "false" },
             ]}
-          />
+          /> */}
         </div>
       </ModalForm>
 
@@ -303,16 +324,16 @@ export function UsersComponent() {
         isOpen={isDeleteOpen}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={handleDelete}
-        title="Delete User"
-        message={`Are you sure you want to delete "${selectedUser?.name}"?`}
+        title="Delete Project"
+        message={`Are you sure you want to delete "${selectedProject?.projectName}"?`}
         isLoading={loading}
       />
 
       {/* Modal Filter */}
-      <ModalForm
+      {/* <ModalForm
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
-        title="Filter Users"
+        title="Filter Projects"
         submitLabel="Search"
         onSubmit={applyFilter}
       >
@@ -324,9 +345,9 @@ export function UsersComponent() {
           />
 
           <InputText
-            label="Username"
-            value={filtersDraft.username}
-            onChange={(e) => setFiltersDraft({ ...filtersDraft, username: e.target.value })}
+            label="Projectname"
+            value={filtersDraft.projectname}
+            onChange={(e) => setFiltersDraft({ ...filtersDraft, projectname: e.target.value })}
           />
 
           <InputText
@@ -357,15 +378,15 @@ export function UsersComponent() {
             ]}
           />
         </div>
-      </ModalForm>
+      </ModalForm> */}
     </div>
   )
 }
 
-export default function UsersPage() {
+export default function ProjectsPage() {
   return (
     <Suspense>
-      <UsersComponent />
+      <ProjectsComponent />
     </Suspense>
   )
 }

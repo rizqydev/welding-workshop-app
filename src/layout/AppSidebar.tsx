@@ -37,7 +37,7 @@ const navItems: NavItem[] = [
   {
     icon: <ListIcon />,
     name: "Projects",
-    path: "/calendar",
+    path: "/projects",
   },
   {
     icon: <DollarLineIcon />,
