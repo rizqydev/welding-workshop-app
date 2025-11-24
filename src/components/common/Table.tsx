@@ -55,9 +55,11 @@ export default function Table<T>({
       params.set("page", page.toString())
 
       // apply filters
-      Object.entries(filters).forEach(([key, value]) => {
-        if (value) params.set(key, value)
-      })
+      if (Object.entries(filters).length > 0) {
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value) params.set(key, value)
+        })
+      }
 
       params.set("limit", pageSize.toString())
 
@@ -74,6 +76,7 @@ export default function Table<T>({
   }
 
   useEffect(() => {
+    console.log(page, filters)
     fetchData()
   }, [page, filters])
 

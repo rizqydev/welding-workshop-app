@@ -41,12 +41,13 @@ describe("Product API handlers", () => {
   it("lists products", async () => {
     await Product.create({ name: "Phone", brand: "Samsung", qty: 5 })
 
-    const res = await listProducts()
+    // @ts-ignore
+    const res = await listProducts({ url: "localhost:3000/api/products?page=1&limit=10" })
     const data = await res.json()
 
     expect(res.status).toBe(200)
-    expect(Array.isArray(data)).toBe(true)
-    expect(data.length).toBe(1)
+    expect(Array.isArray(data.data)).toBe(true)
+    expect(data.data.length).toBe(1)
   })
 
   it("updates a product", async () => {

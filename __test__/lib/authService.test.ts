@@ -29,6 +29,7 @@ describe("Auth service", () => {
         name: "Test User",
         email: "test@gmail.com",
         userRole: "technician",
+        phoneNumber: "0821312321321",
       },
     })
 
@@ -50,6 +51,7 @@ describe("Auth service", () => {
         password: "password123",
         name: "Blocked User",
         userRole: "technician",
+        phoneNumber: "082039234",
       },
     })
 
@@ -63,6 +65,7 @@ describe("Auth service", () => {
       passwordHash: "fakehash",
       name: "Dup",
       userRole: "technician",
+      phoneNumber: "082103213",
     })
 
     const req = makeRequest({
@@ -73,6 +76,7 @@ describe("Auth service", () => {
         password: "password123",
         name: "Dup2",
         userRole: "technician",
+        phoneNumber: "082103213",
       },
     })
 
