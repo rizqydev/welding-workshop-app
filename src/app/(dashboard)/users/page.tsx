@@ -22,7 +22,7 @@ interface IUser {
   status: "true" | "false"
 }
 
-export default function UsersPage() {
+export function UsersComponent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -150,215 +150,222 @@ export default function UsersPage() {
   }, [])
 
   return (
-    <Suspense fallback={<div>Loading..</div>}>
-      <div className="p-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-semibold text-gray-800">Users</h1>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setIsFilterOpen(true)}
-              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 text-sm"
-            >
-              Filter
-            </button>
-            <button
-              onClick={openCreate}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
-            >
-              + Add User
-            </button>
-          </div>
+    <div className="p-6 space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-semibold text-gray-800">Users</h1>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setIsFilterOpen(true)}
+            className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 text-sm"
+          >
+            Filter
+          </button>
+          <button
+            onClick={openCreate}
+            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+          >
+            + Add User
+          </button>
         </div>
-
-        <Table
-          key={refreshKey}
-          apiEndpoint="/api/users"
-          actionsColumnFixed={true}
-          filters={appliedFilters}
-          columns={[
-            { key: "_id", label: "ID", hiddenKey: "_id" },
-            { key: "name", label: "Name" },
-            { key: "username", label: "Username", additionalClass: "px-10" },
-            { key: "email", label: "Email" },
-            { key: "phoneNumber", label: "Phone Number" },
-            {
-              key: "userRole",
-              label: "Role",
-              render: (value) =>
-                typeof value === "string" ? value.charAt(0).toUpperCase() + value.slice(1) : "-",
-            },
-            {
-              key: "status",
-              label: "status",
-              render: (value) => (value ? "Active" : "Inactive"),
-            },
-          ]}
-          renderActions={(user) => (
-            <div className="flex justify-center gap-2">
-              <button
-                onClick={() => openEdit(user)}
-                className="px-2 py-1 text-blue-600 hover:text-blue-800"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => openDelete(user)}
-                className="px-2 py-1 text-red-600 hover:text-red-800"
-              >
-                Delete
-              </button>
-            </div>
-          )}
-        />
-
-        {/* Add / Edit Modal */}
-        <ModalForm
-          isOpen={isFormOpen}
-          onClose={() => setIsFormOpen(false)}
-          title={selectedUser?._id ? "Edit User" : "Add User"}
-          onSubmit={handleSave}
-          submitLabel={selectedUser?._id ? "Update" : "Create"}
-        >
-          <div className="space-y-3">
-            <InputText
-              label="Username"
-              type="text"
-              required
-              value={selectedUser?.username || ""}
-              onChange={(e) =>
-                setSelectedUser({ ...selectedUser, username: e.target.value } as IUser)
-              }
-            />
-
-            {!selectedUser?._id && (
-              <InputText
-                label="Password"
-                type="password"
-                required
-                onChange={(e) =>
-                  setSelectedUser({ ...selectedUser, password: e.target.value } as IUser)
-                }
-              />
-            )}
-
-            <InputText
-              label="Name"
-              value={selectedUser?.name || ""}
-              required
-              onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value } as IUser)}
-            />
-
-            <InputText
-              label="Phone Number"
-              value={selectedUser?.phoneNumber || ""}
-              onChange={(e) =>
-                setSelectedUser({ ...selectedUser, phoneNumber: e.target.value } as IUser)
-              }
-            />
-
-            <InputText
-              label="Email"
-              type="email"
-              value={selectedUser?.email || ""}
-              onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value } as IUser)}
-            />
-
-            <InputSelect
-              label="Role"
-              value={selectedUser?.userRole || "technician"}
-              onChange={(e) =>
-                setSelectedUser({
-                  ...selectedUser,
-                  userRole: e.target.value as UserRole,
-                } as IUser)
-              }
-              options={[
-                { label: "Technician", value: "technician" },
-                { label: "Manager", value: "manager" },
-                { label: "Admin", value: "admin" },
-                { label: "Warehouse", value: "warehouse" },
-                { label: "Finishing", value: "finishing" },
-                { label: "Helper", value: "helper" },
-              ]}
-            />
-
-            <InputSelect
-              label="Status"
-              value={selectedUser.status}
-              onChange={(e) =>
-                setSelectedUser({
-                  ...selectedUser,
-                  status: e.target.value,
-                } as IUser)
-              }
-              options={[
-                { label: "Active", value: "true" },
-                { label: "Inactive", value: "false" },
-              ]}
-            />
-          </div>
-        </ModalForm>
-
-        {/* Delete Confirmation Modal */}
-        <ConfirmModal
-          isOpen={isDeleteOpen}
-          onClose={() => setIsDeleteOpen(false)}
-          onConfirm={handleDelete}
-          title="Delete User"
-          message={`Are you sure you want to delete "${selectedUser?.name}"?`}
-          isLoading={loading}
-        />
-
-        <ModalForm
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-          title="Filter Users"
-          submitLabel="Search"
-          onSubmit={applyFilter}
-        >
-          <div className="space-y-3">
-            <InputText
-              label="Name"
-              value={filtersDraft.name}
-              onChange={(e) => setFiltersDraft({ ...filtersDraft, name: e.target.value })}
-            />
-
-            <InputText
-              label="Username"
-              value={filtersDraft.username}
-              onChange={(e) => setFiltersDraft({ ...filtersDraft, username: e.target.value })}
-            />
-
-            <InputText
-              label="Email"
-              value={filtersDraft.email}
-              onChange={(e) => setFiltersDraft({ ...filtersDraft, email: e.target.value })}
-            />
-
-            <InputText
-              label="Phone Number"
-              value={filtersDraft.phoneNumber}
-              onChange={(e) => setFiltersDraft({ ...filtersDraft, phoneNumber: e.target.value })}
-            />
-
-            <InputSelect
-              label="Status"
-              value={filtersDraft.status}
-              onChange={(e) =>
-                setFiltersDraft({
-                  ...filtersDraft,
-                  status: e.target.value,
-                })
-              }
-              options={[
-                { label: "All", value: "" },
-                { label: "Active", value: "true" },
-                { label: "Inactive", value: "false" },
-              ]}
-            />
-          </div>
-        </ModalForm>
       </div>
+
+      <Table
+        key={refreshKey}
+        apiEndpoint="/api/users"
+        actionsColumnFixed={true}
+        filters={appliedFilters}
+        columns={[
+          { key: "_id", label: "ID", hiddenKey: "_id" },
+          { key: "name", label: "Name" },
+          { key: "username", label: "Username", additionalClass: "px-10" },
+          { key: "email", label: "Email" },
+          { key: "phoneNumber", label: "Phone Number" },
+          {
+            key: "userRole",
+            label: "Role",
+            render: (value) =>
+              typeof value === "string" ? value.charAt(0).toUpperCase() + value.slice(1) : "-",
+          },
+          {
+            key: "status",
+            label: "status",
+            render: (value) => (value ? "Active" : "Inactive"),
+          },
+        ]}
+        renderActions={(user) => (
+          <div className="flex justify-center gap-2">
+            <button
+              onClick={() => openEdit(user)}
+              className="px-2 py-1 text-blue-600 hover:text-blue-800"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => openDelete(user)}
+              className="px-2 py-1 text-red-600 hover:text-red-800"
+            >
+              Delete
+            </button>
+          </div>
+        )}
+      />
+
+      {/* Add / Edit Modal */}
+      <ModalForm
+        isOpen={isFormOpen}
+        onClose={() => setIsFormOpen(false)}
+        title={selectedUser?._id ? "Edit User" : "Add User"}
+        onSubmit={handleSave}
+        submitLabel={selectedUser?._id ? "Update" : "Create"}
+      >
+        <div className="space-y-3">
+          <InputText
+            label="Username"
+            type="text"
+            required
+            value={selectedUser?.username || ""}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, username: e.target.value } as IUser)
+            }
+          />
+
+          {!selectedUser?._id && (
+            <InputText
+              label="Password"
+              type="password"
+              required
+              onChange={(e) =>
+                setSelectedUser({ ...selectedUser, password: e.target.value } as IUser)
+              }
+            />
+          )}
+
+          <InputText
+            label="Name"
+            value={selectedUser?.name || ""}
+            required
+            onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value } as IUser)}
+          />
+
+          <InputText
+            label="Phone Number"
+            value={selectedUser?.phoneNumber || ""}
+            onChange={(e) =>
+              setSelectedUser({ ...selectedUser, phoneNumber: e.target.value } as IUser)
+            }
+          />
+
+          <InputText
+            label="Email"
+            type="email"
+            value={selectedUser?.email || ""}
+            onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value } as IUser)}
+          />
+
+          <InputSelect
+            label="Role"
+            value={selectedUser?.userRole || "technician"}
+            onChange={(e) =>
+              setSelectedUser({
+                ...selectedUser,
+                userRole: e.target.value as UserRole,
+              } as IUser)
+            }
+            options={[
+              { label: "Technician", value: "technician" },
+              { label: "Manager", value: "manager" },
+              { label: "Admin", value: "admin" },
+              { label: "Warehouse", value: "warehouse" },
+              { label: "Finishing", value: "finishing" },
+              { label: "Helper", value: "helper" },
+            ]}
+          />
+
+          <InputSelect
+            label="Status"
+            value={selectedUser.status}
+            onChange={(e) =>
+              setSelectedUser({
+                ...selectedUser,
+                status: e.target.value,
+              } as IUser)
+            }
+            options={[
+              { label: "Active", value: "true" },
+              { label: "Inactive", value: "false" },
+            ]}
+          />
+        </div>
+      </ModalForm>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onConfirm={handleDelete}
+        title="Delete User"
+        message={`Are you sure you want to delete "${selectedUser?.name}"?`}
+        isLoading={loading}
+      />
+
+      <ModalForm
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        title="Filter Users"
+        submitLabel="Search"
+        onSubmit={applyFilter}
+      >
+        <div className="space-y-3">
+          <InputText
+            label="Name"
+            value={filtersDraft.name}
+            onChange={(e) => setFiltersDraft({ ...filtersDraft, name: e.target.value })}
+          />
+
+          <InputText
+            label="Username"
+            value={filtersDraft.username}
+            onChange={(e) => setFiltersDraft({ ...filtersDraft, username: e.target.value })}
+          />
+
+          <InputText
+            label="Email"
+            value={filtersDraft.email}
+            onChange={(e) => setFiltersDraft({ ...filtersDraft, email: e.target.value })}
+          />
+
+          <InputText
+            label="Phone Number"
+            value={filtersDraft.phoneNumber}
+            onChange={(e) => setFiltersDraft({ ...filtersDraft, phoneNumber: e.target.value })}
+          />
+
+          <InputSelect
+            label="Status"
+            value={filtersDraft.status}
+            onChange={(e) =>
+              setFiltersDraft({
+                ...filtersDraft,
+                status: e.target.value,
+              })
+            }
+            options={[
+              { label: "All", value: "" },
+              { label: "Active", value: "true" },
+              { label: "Inactive", value: "false" },
+            ]}
+          />
+        </div>
+      </ModalForm>
+    </div>
+  )
+}
+
+export default function UsersPage() {
+  return (
+    // You could have a loading skeleton as the `fallback` too
+    <Suspense>
+      <UsersComponent />
     </Suspense>
   )
 }
