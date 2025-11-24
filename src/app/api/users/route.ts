@@ -63,6 +63,7 @@ export async function POST(req: Request) {
   }
 
   const { username, password, name, userRole, email, phoneNumber, status } = parsed.data
+  console.log("status", status)
   const passwordHash = await bcrypt.hash(password, 10)
   const user = await User.create({
     username,
@@ -71,7 +72,7 @@ export async function POST(req: Request) {
     userRole,
     email,
     phoneNumber,
-    status,
+    status: status || true,
   })
   return NextResponse.json(
     { _id: user._id, username, name, userRole, email, phoneNumber, status: status === "true" },

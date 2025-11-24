@@ -15,12 +15,13 @@ export async function handleRegister(req: Request) {
   }
 
   const body = await req.json()
+  console.log(body)
   const parsed = userRegisterSchema.safeParse(body)
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 })
   }
 
-  const { username, password, name, userRole, email } = parsed.data
+  const { username, password, name, userRole, email, phoneNumber } = parsed.data
   const existing = await User.findOne({ username })
   if (existing) {
     return NextResponse.json({ error: "Username taken" }, { status: 400 })
@@ -33,6 +34,8 @@ export async function handleRegister(req: Request) {
     name,
     email,
     userRole,
+    status: true,
+    phoneNumber,
   })
 
   return NextResponse.json(

@@ -4,17 +4,7 @@ import User from "@/models/User"
 import { POST as createUser, GET as listUsers } from "@/app/api/users/route"
 import { PUT as updateUser, DELETE as deleteUser } from "@/app/api/users/[id]/route"
 
-// // helper to build a NextRequest
-// function makeRequest(body: any, method: string = "POST") {
-//   return new NextRequest("http://localhost:3000/api/users", {
-//     method,
-//     body: JSON.stringify(body),
-//     headers: { "Content-Type": "application/json" },
-//   })
-// }
-//
-//
-const url = "http://localhost:3000/api/users"
+const url = "http://localhost:3000/api/users?page=1&limit=10"
 
 beforeAll(async () => {
   await connectTestDB()
@@ -40,6 +30,7 @@ describe("User API handlers", () => {
         password: "nurhaqy",
         name: "rizqy",
         userRole: "admin",
+        phoneNumber: "08123213",
       },
       method: "POST",
     })
@@ -56,19 +47,20 @@ describe("User API handlers", () => {
     await User.create({
       username: "xxx",
       name: "Mouse",
-      userRole: "user",
+      userRole: "technician",
       passwordHash: "xxdfsfs23213",
+      phoneNumber: "028324324",
     })
 
     const req = makeRequest({ url, method: "GET" })
 
     const res = await listUsers(req)
     const data = await res.json()
-    console.log(data)
 
+    console.log(data.data)
     expect(res.status).toBe(200)
-    expect(Array.isArray(data.users)).toBe(true)
-    expect(data.users.length).toBe(1)
+    expect(Array.isArray(data.data)).toBe(true)
+    expect(data.data.length).toBe(1)
   })
 
   it("updates a user", async () => {
@@ -77,7 +69,8 @@ describe("User API handlers", () => {
       name: "Mouse",
       email: "123@gmail.com",
       passwordHash: "Logitech",
-      userRole: "user",
+      userRole: "technician",
+      phoneNumber: "028324324",
     })
 
     userId = created._id.toString()
@@ -95,8 +88,9 @@ describe("User API handlers", () => {
     const created = await User.create({
       username: "xxx",
       name: "Mouse",
-      userRole: "user",
+      userRole: "technician",
       passwordHash: "xxdfsfs23213",
+      phoneNumber: "028324324",
     })
 
     userId = created._id.toString()

@@ -86,6 +86,7 @@ export default function ProductsPage() {
         <Table
           key={refreshKey}
           apiEndpoint="/api/products"
+          filters={{}}
           columns={[
             { key: "name", label: "Name" },
             { key: "brand", label: "Brand" },
