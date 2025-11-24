@@ -22,7 +22,7 @@ interface IUser {
   status: "true" | "false"
 }
 
-export default function UsersPage() {
+export function UsersComponent() {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -169,48 +169,46 @@ export default function UsersPage() {
         </div>
       </div>
 
-      <Suspense fallback={<div>Loading..</div>}>
-        <Table
-          key={refreshKey}
-          apiEndpoint="/api/users"
-          actionsColumnFixed={true}
-          filters={appliedFilters}
-          columns={[
-            { key: "_id", label: "ID", hiddenKey: "_id" },
-            { key: "name", label: "Name" },
-            { key: "username", label: "Username", additionalClass: "px-10" },
-            { key: "email", label: "Email" },
-            { key: "phoneNumber", label: "Phone Number" },
-            {
-              key: "userRole",
-              label: "Role",
-              render: (value) =>
-                typeof value === "string" ? value.charAt(0).toUpperCase() + value.slice(1) : "-",
-            },
-            {
-              key: "status",
-              label: "status",
-              render: (value) => (value ? "Active" : "Inactive"),
-            },
-          ]}
-          renderActions={(user) => (
-            <div className="flex justify-center gap-2">
-              <button
-                onClick={() => openEdit(user)}
-                className="px-2 py-1 text-blue-600 hover:text-blue-800"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => openDelete(user)}
-                className="px-2 py-1 text-red-600 hover:text-red-800"
-              >
-                Delete
-              </button>
-            </div>
-          )}
-        />
-      </Suspense>
+      <Table
+        key={refreshKey}
+        apiEndpoint="/api/users"
+        actionsColumnFixed={true}
+        filters={appliedFilters}
+        columns={[
+          { key: "_id", label: "ID", hiddenKey: "_id" },
+          { key: "name", label: "Name" },
+          { key: "username", label: "Username", additionalClass: "px-10" },
+          { key: "email", label: "Email" },
+          { key: "phoneNumber", label: "Phone Number" },
+          {
+            key: "userRole",
+            label: "Role",
+            render: (value) =>
+              typeof value === "string" ? value.charAt(0).toUpperCase() + value.slice(1) : "-",
+          },
+          {
+            key: "status",
+            label: "status",
+            render: (value) => (value ? "Active" : "Inactive"),
+          },
+        ]}
+        renderActions={(user) => (
+          <div className="flex justify-center gap-2">
+            <button
+              onClick={() => openEdit(user)}
+              className="px-2 py-1 text-blue-600 hover:text-blue-800"
+            >
+              Edit
+            </button>
+            <button
+              onClick={() => openDelete(user)}
+              className="px-2 py-1 text-red-600 hover:text-red-800"
+            >
+              Delete
+            </button>
+          </div>
+        )}
+      />
 
       {/* Add / Edit Modal */}
       <ModalForm
@@ -360,5 +358,14 @@ export default function UsersPage() {
         </div>
       </ModalForm>
     </div>
+  )
+}
+
+export default function UsersPage() {
+  return (
+    // You could have a loading skeleton as the `fallback` too
+    <Suspense>
+      <UsersComponent />
+    </Suspense>
   )
 }
