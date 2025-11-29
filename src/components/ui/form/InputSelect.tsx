@@ -5,8 +5,9 @@ import React from "react"
 
 interface InputSelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label: string
-  options: { label: string; value: string }[]
+  options: { label: string; value: any }[]
   error?: string
+  value: any
 }
 
 export function InputSelect({ label, options, error, className = "", ...props }: InputSelectProps) {
