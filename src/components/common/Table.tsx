@@ -4,34 +4,14 @@ import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useSidebar } from "@/context/SidebarContext"
 
-interface TableColumn<T> {
-  key: keyof T
-  label: string
-  additionalClass?: string // 👈 NEW: specify column width
-  hiddenKey?: string // 👈 NEW: store value but don't render the column
-  render?: (value: T[keyof T], row: T) => React.ReactNode
-}
-
-interface TableProps<T> {
-  columns: TableColumn<T>[]
-  apiEndpoint: string
-  pageSize?: number
-  renderActions?: (row: T) => React.ReactNode
-  actionsColumnFixed?: boolean // 👈 NEW: sticky right actions column
-  actionsColumnWidth?: string // 👈 NEW: width for actions column
-  emptyValue?: string
-  filters?: Object
-}
-
+import { TableProps } from "@/lib/definitions"
 export default function Table<T>({
   columns,
   apiEndpoint,
-  pageSize = 10,
   renderActions,
   actionsColumnFixed = false,
   actionsColumnWidth = "120px",
   emptyValue = "-",
-  filters = {},
 }: TableProps<T>) {
   const [data, setData] = useState<T[]>([])
   const [totalPages, setTotalPages] = useState(1)
@@ -44,26 +24,13 @@ export default function Table<T>({
   const router = useRouter()
   const searchParams = useSearchParams()
   const page = Number(searchParams.get("page")) || 1
+  const filter = searchParams.toString()
 
   const fetchData = async () => {
     setLoading(true)
 
     try {
-      const params = new URLSearchParams()
-
-      // pagination
-      params.set("page", page.toString())
-
-      // apply filters
-      if (Object.entries(filters).length > 0) {
-        Object.entries(filters).forEach(([key, value]) => {
-          if (value) params.set(key, value)
-        })
-      }
-
-      params.set("limit", pageSize.toString())
-
-      const res = await fetch(`${apiEndpoint}?${params.toString()}`)
+      const res = await fetch(`${apiEndpoint}?${searchParams.toString()}`)
 
       const result = await res.json()
       setData(result?.data || result?.products || [])
@@ -75,13 +42,15 @@ export default function Table<T>({
     }
   }
 
+  // when filter changes
   useEffect(() => {
-    console.log(page, filters)
     fetchData()
-  }, [page, filters])
+  }, [filter])
 
   const handlePageChange = (newPage: number) => {
-    router.push(`?page=${newPage}`)
+    const params = new URLSearchParams(searchParams.toString())
+    params.set("page", newPage.toString())
+    router.push(`?${params.toString()}`)
   }
 
   return (
@@ -165,6 +134,7 @@ export default function Table<T>({
                             : undefined
                         }
                       >
+                        {/* @ts-ignore */}
                         {displayValue}
                       </td>
                     )

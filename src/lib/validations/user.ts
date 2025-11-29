@@ -13,7 +13,7 @@ export const userSchema = z.object({
   email: z.email().min(1, "Email is required"),
   phoneNumber: z.string().min(1, "Phone Number is required"),
   userRole: z.enum(["admin", "manager", "technician", "warehouse", "helper", "finishing"]),
-  status: z.enum(["true", "false"]).optional().default("true"),
+  status: z.boolean().optional(),
 })
 
 export const userUpdateSchema = z.object({
@@ -26,7 +26,8 @@ export const userUpdateSchema = z.object({
     .enum(["admin", "manager", "technician", "warehouse", "helper", "finishing"])
     .optional(),
 
-  status: z.enum(["true", "false"]).optional(),
+  // status: z.enum(["true", "false"]).optional(),
+  status: z.boolean().optional(),
 })
 
 export const userRegisterSchema = z.object({
