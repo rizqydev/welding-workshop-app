@@ -42,6 +42,24 @@ export interface Informative {
   geonameId?: number
 }
 
+export interface TableColumn<T> {
+  key: keyof T
+  label: string
+  additionalClass?: string // 👈 NEW: specify column width
+  hiddenKey?: string // 👈 NEW: store value but don't render the column
+  render?: (value: T[keyof T], row: T) => React.ReactNode
+}
+
+export interface TableProps<T> {
+  columns: TableColumn<T>[]
+  apiEndpoint: string
+  pageSize?: number
+  renderActions?: (row: T) => React.ReactNode
+  actionsColumnFixed?: boolean // 👈 NEW: sticky right actions column
+  actionsColumnWidth?: string // 👈 NEW: width for actions column
+  emptyValue?: string
+}
+
 export type UserRole = "admin" | "technician" | "manager" | "warehouse"
 
 export interface IUser {
@@ -73,20 +91,32 @@ export type UserState = {
   isFormDeleteOpen: boolean
 }
 
-export interface TableColumn<T> {
-  key: keyof T
-  label: string
-  additionalClass?: string // 👈 NEW: specify column width
-  hiddenKey?: string // 👈 NEW: store value but don't render the column
-  render?: (value: T[keyof T], row: T) => React.ReactNode
+export interface IProject {
+  _id?: string
+  projectName: string
+  customerName: string
+  address: string
+  startDate?: string | null
+  endDate?: string | null
+  typeOfWork: string
+  volume: number
+  volumeUnit: string
+  isComplete: boolean
 }
 
-export interface TableProps<T> {
-  columns: TableColumn<T>[]
-  apiEndpoint: string
-  pageSize?: number
-  renderActions?: (row: T) => React.ReactNode
-  actionsColumnFixed?: boolean // 👈 NEW: sticky right actions column
-  actionsColumnWidth?: string // 👈 NEW: width for actions column
-  emptyValue?: string
+export interface IFilterProject {
+  username?: string
+  name?: string
+  email?: string
+  status?: boolean | null
+  phoneNumber?: string
+}
+
+export type ProjectState = {
+  refreshKey: number
+  isFormOpen: boolean
+  selectedProject: Partial<IProject>
+  isFormDeleteOpen: boolean
+  // filter: IFilterProject
+  // isFilterOpen: boolean
 }

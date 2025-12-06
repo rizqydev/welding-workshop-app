@@ -57,7 +57,6 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   await dbConnect()
   const body = await req.json()
-  //   console.log("body", body)
   const sd = body.startDate ? new Date(body.startDate) : null
   const ed = body.endDate ? new Date(body.endDate) : null
 

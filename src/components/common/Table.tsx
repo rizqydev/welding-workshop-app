@@ -33,7 +33,7 @@ export default function Table<T>({
       const res = await fetch(`${apiEndpoint}?${searchParams.toString()}`)
 
       const result = await res.json()
-      setData(result?.data || result?.products || [])
+      setData(result?.data || [])
       setTotalPages(result?.totalPages || 1)
     } catch (error) {
       console.error("Error fetching data:", error)

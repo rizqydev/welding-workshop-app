@@ -11,6 +11,7 @@ export interface IProject extends Document {
   typeOfWork: string
   volume: number
   volumeUnit: string
+  isComplete: boolean
 }
 
 const ProjectSchema = new Schema<IProject>(
@@ -23,6 +24,7 @@ const ProjectSchema = new Schema<IProject>(
     typeOfWork: { type: String, required: false },
     volume: { type: Number, required: false },
     volumeUnit: { type: String, required: false },
+    isComplete: { type: Boolean, default: false },
   },
   { timestamps: true },
 )
