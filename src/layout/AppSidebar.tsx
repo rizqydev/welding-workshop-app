@@ -62,7 +62,7 @@ const navItems: NavItem[] = [
   {
     icon: <CalenderIcon />,
     name: "Attendance",
-    path: "/calendar",
+    path: "/attendance",
   },
   {
     icon: <UserCircleIcon />,

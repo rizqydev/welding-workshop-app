@@ -10,7 +10,7 @@ interface InputTextProps extends React.InputHTMLAttributes<HTMLInputElement> {
 
 export function InputText({ label, error, className = "", ...props }: InputTextProps) {
   return (
-    <div className={className}>
+    <div className={`${className} space-y-1`}>
       <label className="block text-sm font-medium text-gray-700">
         {label + (props.required ? "*" : "")}
       </label>
