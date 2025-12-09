@@ -2,7 +2,7 @@
 import { useFetch } from "@/hooks/useFetch"
 import { BigdataCloudReverseGeo } from "@/lib/definitions"
 import { Button } from "@headlessui/react"
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 
 export default function ReverseGeocode() {
   const { fetchApi } = useFetch()

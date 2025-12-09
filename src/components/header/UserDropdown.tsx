@@ -124,7 +124,7 @@ export default function UserDropdown() {
         title="Konfirmasi Logout"
         size="max-w-xl" // Example custom size
       >
-        <p>Apakah anda yakin ingin Log Out?</p>
+        <p className="mb-4 text-ellipsis">Apakah anda yakin ingin Log Out?</p>
         <div className="flex justify-end gap-2">
           <Button className="w-20" variant="outline" onClick={() => setIsModalOpen(false)}>
             Tidak

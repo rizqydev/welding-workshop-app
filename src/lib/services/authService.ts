@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs"
 import { NextResponse } from "next/server"
 import dbConnect from "@/lib/mongoose"
 import User, { IUser } from "@/models/User"
-import Setting, { ISetting } from "@/models/Setting"
+import Setting from "@/models/Setting"
 import { userRegisterSchema } from "@/lib/validations/user"
 
 export async function handleRegister(req: Request) {
@@ -15,8 +15,8 @@ export async function handleRegister(req: Request) {
   }
 
   const body = await req.json()
-  console.log(body)
   const parsed = userRegisterSchema.safeParse(body)
+
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 })
   }

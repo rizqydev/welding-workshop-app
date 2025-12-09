@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useSidebar } from "@/context/SidebarContext"
+// import { useSidebar } from "@/context/SidebarContext"
 
 import { TableProps } from "@/lib/definitions"
 export default function Table<T>({
@@ -17,9 +17,9 @@ export default function Table<T>({
   const [totalPages, setTotalPages] = useState(1)
   const [loading, setLoading] = useState(true)
 
-  const { isExpanded, isHovered } = useSidebar()
+  // const { isExpanded, isHovered } = useSidebar()
 
-  const mainContentMargin = isExpanded || isHovered ? "lg:w-[71vw] " : "lg:w-[85vw]"
+  // const mainContentMargin = isExpanded || isHovered ? "lg:w-[71vw] " : "lg:w-[85vw]"
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -33,7 +33,7 @@ export default function Table<T>({
       const res = await fetch(`${apiEndpoint}?${searchParams.toString()}`)
 
       const result = await res.json()
-      setData(result?.data || result?.products || [])
+      setData(result?.data || [])
       setTotalPages(result?.totalPages || 1)
     } catch (error) {
       console.error("Error fetching data:", error)
@@ -56,7 +56,7 @@ export default function Table<T>({
   return (
     <div className="space-y-4">
       {/* Table */}
-      <div className={`overflow-x-auto border relative ${mainContentMargin}`}>
+      <div className={`overflow-x-auto border relative`}>
         <table className="min-w-full text-sm text-left text-gray-700">
           <thead className="bg-gray-100 text-gray-900 font-semibold text-sm">
             <tr>

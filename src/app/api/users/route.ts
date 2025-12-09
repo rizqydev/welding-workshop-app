@@ -75,7 +75,7 @@ export async function POST(req: Request) {
     status: status || true,
   })
   return NextResponse.json(
-    { _id: user._id, username, name, userRole, email, phoneNumber, status: status === "true" },
+    { _id: user._id, username, name, userRole, email, phoneNumber, status },
     { status: 201 },
   )
 }

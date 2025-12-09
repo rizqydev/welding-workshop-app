@@ -47,7 +47,8 @@ export function Modal({ isOpen, onClose, children, title, size = "max-w-lg" }: M
               leaveTo="opacity-0 scale-95"
             >
               <DialogPanel
-                className={`w-full ${size} transform overflow-hidden rounded-xl bg-white p-6 text-left align-middle shadow-2xl transition-all`}
+                // className={`w-full transform overflow-hidden rounded-xl bg-white p-6 text-left align-middle shadow-2xl transition-all`}
+                className={`${size !== "max-w-lg" ? size : "w-full max-w-lg"} transform overflow-hidden rounded-xl bg-white p-6 text-left align-middle shadow-2xl transition-all`}
               >
                 {/* Header Section */}
                 <div className="flex items-center justify-between pb-4 border-b border-gray-100">
