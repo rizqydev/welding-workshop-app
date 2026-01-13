@@ -11,9 +11,10 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-  const { data: session } = useSession()
+  const session = useSession()
 
   const handleLogin = async (e: React.FormEvent) => {
+    console.log("session", session)
     e.preventDefault()
     setLoading(true)
     setError(null)
@@ -29,12 +30,12 @@ export default function LoginPage() {
     if (res?.error) {
       setError("Invalid username or password")
     } else {
-      router.push("/")
+      router.push("/dashboard")
     }
   }
 
   if (session) {
-    redirect("/")
+    // redirect("/")
   }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">

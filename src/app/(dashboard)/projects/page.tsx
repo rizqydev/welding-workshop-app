@@ -17,8 +17,6 @@ export function ProjectsComponent() {
     setSelectedProject,
     setIsFormOpen,
     setIsFormDeleteOpen,
-    // setIsFilterOpen,
-    // isFilterOpen,
   } = useProjectStore((state) => state)
 
   const openAdd = () => {

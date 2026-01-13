@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 //  Specify protected and public routes
-const publicRoutes = ['/login', '/register', "/"]
+const publicRoutes = ['/login', '/register']
 
 
 export function proxy(request: NextRequest) {
   const token = request.cookies.get("next-auth.session-token") || request.cookies.get("__Secure-next-auth.session-token");
   const path = request.nextUrl.pathname;
-
+  
   if (!token && publicRoutes.includes(path)) {
     return NextResponse.next();
   }
@@ -17,7 +17,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (token && publicRoutes.includes(path)) {
+  if (token && (publicRoutes.includes(path) || path === "/")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
