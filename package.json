@@ -19,6 +19,7 @@
     "next-auth": "^4.24.11",
     "react": "19.2.1",
     "react-dom": "19.2.1",
+    "react-qr-code": "^2.0.18",
     "zod": "^4.1.9",
     "zustand": "^5.0.8"
   },
