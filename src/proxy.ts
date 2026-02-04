@@ -2,14 +2,20 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 //  Specify protected and public routes
-const publicRoutes = ['/login', '/register', '/show']
+const publicRoutes = ['/login', '/register']
+const publicRoutePrefixes = ["/show"];
 
 
 export function proxy(request: NextRequest) {
   const token = request.cookies.get("next-auth.session-token") || request.cookies.get("__Secure-next-auth.session-token");
   const path = request.nextUrl.pathname;
+
+  const isPublicRoute =
+    publicRoutes.includes(path) ||
+    publicRoutePrefixes.some((prefix) => path.startsWith(prefix));
   
-  if (!token && publicRoutes.includes(path)) {
+  // ✅ allow public routes without login
+  if (!token && isPublicRoute) {
     return NextResponse.next();
   }
 
