@@ -14,7 +14,6 @@ export default function ProfilePage() {
     userRole: "technician",
   })
 
-  
   return (
     <div className="bg-white w-full min-h-96 p-4">
       <div className="flex justify-between">
@@ -88,10 +87,6 @@ export default function ProfilePage() {
         />
 
         {/* create input file profile.image  */}
-
-    
-
-
 
         <InputSelect
           label="Role"
