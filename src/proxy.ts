@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 //  Specify protected and public routes
-const publicRoutes = ['/login', '/register']
+const publicRoutes = ['/login', '/register', '/show']
 
 
 export function proxy(request: NextRequest) {

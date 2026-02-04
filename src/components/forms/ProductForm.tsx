@@ -1,6 +1,9 @@
 "use client"
 
 import { useState } from "react"
+import { InputText } from "../ui/form/InputText"
+import { InputTextArea } from "../ui/form/InputTextArea"
+import QRCode from "react-qr-code"
 
 export interface ProductFormData {
   _id?: string
@@ -34,48 +37,29 @@ export function ProductForm({ initialData, onSubmit, onCancel, loading }: Produc
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Name</label>
-        <input
-          name="name"
-          value={form.name}
-          onChange={handleChange}
-          className="mt-1 w-full border rounded-md px-3 py-2"
-          required
-        />
-      </div>
+      <InputText label="Name" name="name" value={form.name} onChange={handleChange} required />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Brand</label>
-        <input
-          name="brand"
-          value={form.brand}
-          onChange={handleChange}
-          className="mt-1 w-full border rounded-md px-3 py-2"
-        />
-      </div>
+      <InputText label="Brand" name="brand" value={form.brand} onChange={handleChange} />
+      <InputText
+        label="Quantity"
+        type="number"
+        name="qty"
+        value={form.qty}
+        onChange={handleChange}
+        required
+      />
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Quantity</label>
-        <input
-          type="number"
-          name="qty"
-          value={form.qty}
-          onChange={handleChange}
-          className="mt-1 w-full border rounded-md px-3 py-2"
-          required
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700">Information</label>
-        <textarea
-          name="information"
-          value={form.information}
-          onChange={handleChange}
-          className="mt-1 w-full border rounded-md px-3 py-2"
-        />
-      </div>
+      <InputTextArea
+        label="Information"
+        name="information"
+        value={form.information}
+        onChange={handleChange}
+      />
+      {form?._id && (
+        <div className="flex justify-center">
+          <QRCode value={`${process.env.NEXT_PUBLIC_API_BASE_URL}/show/${form._id}`} />
+        </div>
+      )}
 
       <div className="flex justify-end gap-2 pt-4">
         <button

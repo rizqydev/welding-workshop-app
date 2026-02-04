@@ -34,18 +34,17 @@ const navItems: NavItem[] = [
     name: "Projects",
     path: "/projects",
   },
-  {
-    icon: <DollarLineIcon />,
-    name: "Purchases",
-    path: "/calendar",
-  },
-
+  // {
+  //   icon: <DollarLineIcon />,
+  //   name: "Purchases",
+  //   path: "/calendar",
+  // },
   {
     name: "Inventory",
     icon: <BoxCubeIcon />,
     subItems: [
       { name: "Tools", path: "/products", pro: false },
-      { name: "Material", path: "/error-404", pro: false },
+      // { name: "Material", path: "/error-404", pro: false },
     ],
   },
 
@@ -54,11 +53,11 @@ const navItems: NavItem[] = [
     icon: <ListIcon />,
     path: "/products",
   }, */
-  {
-    icon: <CalenderIcon />,
-    name: "Attendance",
-    path: "/attendance",
-  },
+  // {
+  //   icon: <CalenderIcon />,
+  //   name: "Attendance",
+  //   path: "/attendance",
+  // },
   {
     icon: <UserCircleIcon />,
     name: "Users",
