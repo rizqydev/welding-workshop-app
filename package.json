@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "dev": "bun --bun next dev",
+    "build": "bun --bun next build",
+    "start": "bun --bun next start",
+    "lint": "bun --bun next lint",
     "test": "jest"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "next-auth": "^4.24.11",
     "react": "19.2.1",
     "react-dom": "19.2.1",
+    "react-qr-code": "^2.0.18",
     "zod": "^4.1.9",
     "zustand": "^5.0.8"
   },
@@ -27,7 +28,6 @@
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4.1.13",
     "@types/jest": "^30.0.0",
-    "@types/next-auth": "^3.15.0",
     "@types/node": "^20",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",

@@ -12,13 +12,8 @@ import {
   GridIcon,
   HorizontaLDots,
   ListIcon,
-  PageIcon,
-  PieChartIcon,
-  PlugInIcon,
-  TableIcon,
   UserCircleIcon,
 } from "../icons/index"
-import SidebarWidget from "./SidebarWidget"
 
 type NavItem = {
   name: string
@@ -49,7 +44,7 @@ const navItems: NavItem[] = [
     name: "Inventory",
     icon: <BoxCubeIcon />,
     subItems: [
-      { name: "Tools", path: "/blank", pro: false },
+      { name: "Tools", path: "/products", pro: false },
       { name: "Material", path: "/error-404", pro: false },
     ],
   },

@@ -4,11 +4,13 @@ import { InputText } from "@/components/ui/form/InputText"
 import { useUserStore } from "@/providers/userStoreProvider"
 
 import { IUser, UserRole } from "@/lib/definitions"
+import { useSession } from "next-auth/react"
 
 export default function UserForm() {
   const { isFormOpen, setIsFormOpen, selectedUser, setSelectedUser, setRefreshKey } = useUserStore(
     (state) => state,
   )
+  const { data: session } = useSession()
 
   const handleSave = async (submitRequestFn: any) => {
     const userToSubmit = selectedUser
@@ -39,7 +41,7 @@ export default function UserForm() {
           onChange={(e) => setSelectedUser({ ...selectedUser, username: e.target.value } as IUser)}
         />
 
-        {!selectedUser?._id && (
+        {(!selectedUser?._id || selectedUser.email === session?.user.email) && (
           <InputText
             label="Password"
             type="password"
