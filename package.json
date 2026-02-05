@@ -7,7 +7,7 @@
     "build": "bun --bun next build",
     "start": "bun --bun next start",
     "lint": "bun --bun next lint",
-    "test": "jest"
+    "test": "bun jest"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
@@ -27,7 +27,6 @@
     "@eslint/js": "^9.35.0",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4.1.13",
-    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
@@ -37,11 +36,9 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.4",
     "globals": "^16.4.0",
-    "jest": "^30.1.3",
     "prettier": "^3.6.2",
     "supertest": "^7.1.4",
     "tailwindcss": "^4.1.13",
-    "ts-jest": "^29.4.4",
     "typescript": "^5",
     "typescript-eslint": "^8.44.0"
   },

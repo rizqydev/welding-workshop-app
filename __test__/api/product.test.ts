@@ -69,7 +69,7 @@ describe("Product API handlers", () => {
     const req = new NextRequest(`http://localhost:3000/api/products/${productId}`, {
       method: "DELETE",
     })
-    const res = await deleteProduct(req, { params: { id: productId } })
+    const res = await deleteProduct(req, { params: { id: productId }})
     const data = await res.json()
 
     expect(res.status).toBe(200)

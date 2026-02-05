@@ -8,11 +8,12 @@ import { handleSettingsUpdate } from "@/lib/services/settingService"
 
 // ✅ Mock getServerSession from next-auth
 jest.mock("next-auth", () => {
-  const originalModule = jest.requireActual("next-auth")
+  // console.log(jest)
+  // const originalModule = jest.requireActual("next-auth")
 
   return {
     __esModule: true,
-    ...originalModule,
+    // ...originalModule,
     getServerSession: jest.fn(),
   }
 })
