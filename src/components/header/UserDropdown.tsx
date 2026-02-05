@@ -91,7 +91,7 @@ export default function UserDropdown() {
                   fill=""
                 />
               </svg>
-              Edit profile
+              Edit Profile
             </DropdownItem>
           </li>
         </ul>

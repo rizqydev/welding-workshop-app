@@ -3,6 +3,7 @@
 import { signIn, useSession } from "next-auth/react"
 import { useState } from "react"
 import { redirect, useRouter } from "next/navigation"
+import { InputText } from "@/components/ui/form/InputText"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -34,34 +35,17 @@ export default function LoginPage() {
     }
   }
 
-  if (session) {
-    // redirect("/")
-  }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
       <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow text-slate-600">
         <h1 className="text-2xl font-semibold mb-6 text-center">Login</h1>
 
         <form onSubmit={handleLogin} className="flex flex-col gap-4">
-          <input
-            type="text"
-            placeholder="Username"
-            className="border p-2 rounded"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="border p-2 rounded"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+
+          <InputText label="Username" name="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+          <InputText type="password" label="Password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
-
           <button
             type="submit"
             className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
