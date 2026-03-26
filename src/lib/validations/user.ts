@@ -35,7 +35,7 @@ export const userRegisterSchema = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   name: z.string().min(1, "Name is required"),
   email: z.email().min(1, "Email is required"),
-  phoneNumber: z.string().min(1, "Phone Number is required"),
+  // phoneNumber: z.string().min(1, "Phone Number is required"),
   // status: z.enum(["true", "false"]),
   userRole: z
     .enum(["admin", "manager", "technician", "warehouse", "helper", "finishing"])
