@@ -6,7 +6,7 @@ import { PUT as updateProduct, DELETE as deleteProduct } from "@/app/api/product
 
 // helper to build a NextRequest
 function makeRequest(body: any, method: string = "POST") {
-  return new NextRequest("http://localhost:3000/api/products", {
+  return new NextRequest(`${process.env.NEXTAUTH_URL}/api/products`, {
     method,
     body: JSON.stringify(body),
     headers: { "Content-Type": "application/json" },
@@ -42,7 +42,9 @@ describe("Product API handlers", () => {
     await Product.create({ name: "Phone", brand: "Samsung", qty: 5 })
 
     // @ts-ignore
-    const res = await listProducts({ url: "localhost:3000/api/products?page=1&limit=10" })
+    const res = await listProducts({
+      url: `${process.env.NEXTAUTH_URL}/api/products?page=1&limit=10`,
+    })
     const data = await res.json()
 
     expect(res.status).toBe(200)
@@ -66,10 +68,10 @@ describe("Product API handlers", () => {
     const created = await Product.create({ name: "Keyboard", brand: "HP", qty: 1 })
     productId = created._id.toString()
 
-    const req = new NextRequest(`http://localhost:3000/api/products/${productId}`, {
+    const req = new NextRequest(`${process.env.NEXTAUTH_URL}/api/products/${productId}`, {
       method: "DELETE",
     })
-    const res = await deleteProduct(req, { params: { id: productId }})
+    const res = await deleteProduct(req, { params: { id: productId } })
     const data = await res.json()
 
     expect(res.status).toBe(200)

@@ -6,7 +6,7 @@ import { connectTestDB, clearTestDB, disconnectTestDB, makeRequest } from "../te
 import User from "@/models/User"
 import Setting from "@/models/Setting"
 
-const url = `http://localhost:3000/api/register`
+const url = `${process.env.NEXTAUTH_URL}/api/register`
 
 beforeAll(async () => {
   await connectTestDB()

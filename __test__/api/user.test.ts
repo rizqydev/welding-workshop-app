@@ -4,7 +4,7 @@ import User from "@/models/User"
 import { POST as createUser, GET as listUsers } from "@/app/api/users/route"
 import { PUT as updateUser, DELETE as deleteUser } from "@/app/api/users/[id]/route"
 
-const url = "http://localhost:3000/api/users?page=1&limit=10"
+const url = `${process.env.NEXTAUTH_URL}/api/users?page=1&limit=10`
 
 beforeAll(async () => {
   await connectTestDB()
@@ -95,7 +95,7 @@ describe("User API handlers", () => {
 
     userId = created._id.toString()
 
-    const req = new NextRequest(`http://localhost:3000/api/users/${userId}`, {
+    const req = new NextRequest(`${process.env.NEXTAUTH_URL}/api/users/${userId}`, {
       method: "DELETE",
     })
     const res = await deleteUser(req, { params: { id: userId } })

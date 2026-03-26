@@ -4,7 +4,7 @@ import Project from "@/models/Project"
 import { POST as createProject, GET as listProjects } from "@/app/api/projects/route"
 import { DELETE as deleteProject } from "@/app/api/projects/[id]/route"
 
-const url = "http://localhost:3000/api/projects?page=1&limit=10"
+const url = `${process.env.NEXTAUTH_URL}/api/projects?page=1&limit=10`
 
 beforeAll(async () => {
   await connectTestDB()
@@ -100,7 +100,7 @@ describe("Project API handlers", () => {
 
     projectId = created._id.toString()
 
-    const req = new NextRequest(`http://localhost:3000/api/projects/${projectId}`, {
+    const req = new NextRequest(`${process.env.NEXTAUTH_URL}/api/projects/${projectId}`, {
       method: "DELETE",
     })
     const res = await deleteProject(req, { params: { id: projectId } })
